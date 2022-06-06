@@ -22,6 +22,7 @@ using Nop.Services.Topics;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
+using Nop.Core.Domain.Directory;
 
 namespace Nop.Plugin.Api.Infrastructure
 {
@@ -71,6 +72,7 @@ namespace Nop.Plugin.Api.Infrastructure
             services.AddScoped<IFactory<ShoppingCartItem>, ShoppingCartItemFactory>();
             services.AddScoped<IFactory<Manufacturer>, ManufacturerFactory>();
             services.AddScoped<IFactory<Topic>, TopicFactory>();
+            services.AddScoped<IFactory<Currency>, CurrencyFactory>();
 
             services.AddScoped<IJsonPropertyMapper, JsonPropertyMapper>();
 

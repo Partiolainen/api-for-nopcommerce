@@ -24,7 +24,6 @@ using Nop.Services.Localization;
 using Nop.Services.Logging;
 using Nop.Services.Media;
 using Nop.Services.Security;
-using Nop.Services.Seo;
 using Nop.Services.Stores;
 
 namespace Nop.Plugin.Api.Controllers
@@ -34,7 +33,6 @@ namespace Nop.Plugin.Api.Controllers
         private readonly IDTOHelper _dtoHelper;
         private readonly ICustomerApiService _customerApiService;
         private readonly IFactory<Currency> _factory;
-        private readonly IUrlRecordService _urlRecordService;
         private readonly IAuthenticationService _authenticationService;
         private readonly ICurrencyService _currencyService;
 
@@ -52,7 +50,6 @@ namespace Nop.Plugin.Api.Controllers
             IDTOHelper dtoHelper,
             ICustomerApiService customerApiService,
             IFactory<Currency> factory,
-            IUrlRecordService urlRecordService,
             IAuthenticationService authenticationService)
             : base(jsonFieldsSerializer,
                 aclService,
@@ -68,7 +65,6 @@ namespace Nop.Plugin.Api.Controllers
             _dtoHelper = dtoHelper;
             _customerApiService = customerApiService;
             _factory = factory;
-            _urlRecordService = urlRecordService;
             _authenticationService = authenticationService;
         }
 
@@ -83,11 +79,11 @@ namespace Nop.Plugin.Api.Controllers
         [ProducesResponseType(typeof(ErrorsRootObject), (int)HttpStatusCode.BadRequest)]
         [GetRequestsErrorInterceptorActionFilter]
         public async Task<IActionResult> GetAllCurrencies([FromQuery] int? storeId = null,
-            [FromQuery] string fields = null)
+            [FromQuery] string fields = null, [FromQuery] bool showHidden = false)
         {
             // no permissions required
 
-            var allCurrencies = await _currencyService.GetAllCurrenciesAsync(storeId: storeId ?? 0);
+            var allCurrencies = await _currencyService.GetAllCurrenciesAsync(storeId: storeId ?? 0, showHidden: showHidden);
 
             IList<CurrencyDto> currenciesAsDto = await allCurrencies
                 .SelectAwait(async language => await _dtoHelper.PrepareCurrencyDtoAsync(language)).ToListAsync();
@@ -238,7 +234,7 @@ namespace Nop.Plugin.Api.Controllers
         }
 
         [HttpDelete]
-        [Route("/api/categories/{id}", Name = "DeleteCurrency")]
+        [Route("/api/currencies/{id}", Name = "DeleteCurrency")]
         [AuthorizePermission("ManageCurrencies")]
         [ProducesResponseType(typeof(void), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(ErrorsRootObject), (int)HttpStatusCode.BadRequest)]
