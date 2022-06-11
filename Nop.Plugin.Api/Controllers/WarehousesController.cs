@@ -3,15 +3,20 @@ using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Nop.Core.Domain.Media;
+using Nop.Core.Domain.Shipping;
 using Nop.Plugin.Api.Attributes;
 using Nop.Plugin.Api.Authorization.Attributes;
+using Nop.Plugin.Api.Delta;
 using Nop.Plugin.Api.DTO.Categories;
 using Nop.Plugin.Api.DTO.Errors;
 using Nop.Plugin.Api.DTO.Warehouses;
+using Nop.Plugin.Api.Factories;
 using Nop.Plugin.Api.Helpers;
 using Nop.Plugin.Api.Infrastructure;
 using Nop.Plugin.Api.JSON.ActionResults;
 using Nop.Plugin.Api.JSON.Serializers;
+using Nop.Plugin.Api.ModelBinders;
 using Nop.Plugin.Api.Models.CategoriesParameters;
 using Nop.Plugin.Api.Models.WarehousesParameters;
 using Nop.Plugin.Api.Services;
@@ -21,17 +26,22 @@ using Nop.Services.Localization;
 using Nop.Services.Logging;
 using Nop.Services.Media;
 using Nop.Services.Security;
+using Nop.Services.Shipping;
 using Nop.Services.Stores;
+using WarehousesRootObject = Nop.Plugin.Api.DTO.Warehouses.WarehousesRootObject;
 
 namespace Nop.Plugin.Api.Controllers
 {
     public class WarehousesController : BaseApiController
     {
         private readonly IWarehouseApiService _warehouseApiService;
+        private readonly IShippingService _shippingService;
         private readonly IDTOHelper _dtoHelper;
+        private readonly IFactory<Warehouse> _factory;
 
         public WarehousesController(
             IWarehouseApiService warehouseApiService,
+            IShippingService shippingService,
             IJsonFieldsSerializer jsonFieldsSerializer,
             IAclService aclService,
             ICustomerService customerService,
@@ -41,12 +51,15 @@ namespace Nop.Plugin.Api.Controllers
             ICustomerActivityService customerActivityService,
             ILocalizationService localizationService,
             IPictureService pictureService,
-            IDTOHelper dtoHelper) : base(jsonFieldsSerializer,
+            IDTOHelper dtoHelper,
+            IFactory<Warehouse> factory) : base(jsonFieldsSerializer,
             aclService, customerService, storeMappingService, storeService, discountService, customerActivityService,
             localizationService, pictureService)
         {
             _warehouseApiService = warehouseApiService;
+            _shippingService = shippingService;
             _dtoHelper = dtoHelper;
+            _factory = factory;
         }
 
         /// <summary>
@@ -126,6 +139,45 @@ namespace Nop.Plugin.Api.Controllers
             warehousesRootObject.Warehouses.Add(warehouseDto);
 
             var json = JsonFieldsSerializer.Serialize(warehousesRootObject, fields);
+
+            return new RawJsonActionResult(json);
+        }
+
+        [HttpPost]
+        [Route("/api/warehouses", Name = "CreateWarehouse")]
+        [AuthorizePermission("ManageShippingSettings")]
+        [ProducesResponseType(typeof(WarehousesRootObject), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(ErrorsRootObject), 422)]
+        [ProducesResponseType(typeof(ErrorsRootObject), (int)HttpStatusCode.BadRequest)]
+        [ProducesResponseType(typeof(string), (int)HttpStatusCode.Unauthorized)]
+        public async Task<IActionResult> CreateWarehouse(
+            [FromBody]
+            [ModelBinder(typeof(JsonModelBinder<WarehouseDto>))]
+            Delta<WarehouseDto> warehouseDelta)
+        {
+            // Here we display the errors if the validation has failed at some point.
+            if (!ModelState.IsValid)
+            {
+                return Error();
+            }
+
+            // Inserting the new warehouse
+            var warehouse = await _factory.InitializeAsync();
+            warehouseDelta.Merge(warehouse);
+
+            await _shippingService.InsertWarehouseAsync(warehouse);
+            
+            await CustomerActivityService.InsertActivityAsync("AddNewWarehouse",
+                                                   await LocalizationService.GetResourceAsync("ActivityLog.AddNewWarehouse"), warehouse);
+
+            // Preparing the result dto of the new category
+            var newWarehouseDto = await _dtoHelper.PrepareWarehouseDtoAsync(warehouse);
+
+            var warehousesRootObject = new WarehousesRootObject();
+
+            warehousesRootObject.Warehouses.Add(newWarehouseDto);
+
+            var json = JsonFieldsSerializer.Serialize(warehousesRootObject, string.Empty);
 
             return new RawJsonActionResult(json);
         }
