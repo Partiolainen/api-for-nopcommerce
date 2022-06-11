@@ -229,5 +229,35 @@ namespace Nop.Plugin.Api.Controllers
 
             return new RawJsonActionResult(json);
         }
+
+        [HttpDelete]
+        [Route("/api/warehouses/{id}", Name = "DeleteWarehouse")]
+        [AuthorizePermission("ManageShippingSettings")]
+        [ProducesResponseType(typeof(void), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(ErrorsRootObject), (int)HttpStatusCode.BadRequest)]
+        [ProducesResponseType(typeof(string), (int)HttpStatusCode.NotFound)]
+        [ProducesResponseType(typeof(string), (int)HttpStatusCode.Unauthorized)]
+        [GetRequestsErrorInterceptorActionFilter]
+        public async Task<IActionResult> DeleteWarehouse([FromRoute] int id)
+        {
+            if (id <= 0)
+            {
+                return Error(HttpStatusCode.BadRequest, "id", "invalid id");
+            }
+
+            var warehouseToDelete = _warehouseApiService.GetWarehouseById(id);
+
+            if (warehouseToDelete == null)
+            {
+                return Error(HttpStatusCode.NotFound, "warehouse", "warehouse not found");
+            }
+
+            await _shippingService.DeleteWarehouseAsync(warehouseToDelete);
+
+            //activity log
+            await CustomerActivityService.InsertActivityAsync("DeleteWarehouse", await LocalizationService.GetResourceAsync("ActivityLog.DeleteWarehouse"), warehouseToDelete);
+
+            return new RawJsonActionResult("{}");
+        }
     }
 }
