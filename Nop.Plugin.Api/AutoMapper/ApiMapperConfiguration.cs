@@ -27,6 +27,7 @@ using Nop.Plugin.Api.DTO.ProductAttributes;
 using Nop.Plugin.Api.DTO.ProductCategoryMappings;
 using Nop.Plugin.Api.DTO.ProductManufacturerMappings;
 using Nop.Plugin.Api.DTO.Products;
+using Nop.Plugin.Api.DTO.ProductWarehouseIventories;
 using Nop.Plugin.Api.DTO.ShoppingCarts;
 using Nop.Plugin.Api.DTO.SpecificationAttributes;
 using Nop.Plugin.Api.DTO.Stores;
@@ -50,6 +51,8 @@ namespace Nop.Plugin.Api.AutoMapper
             CreateMap<ProductCategory, ProductCategoryMappingDto>();
 
             CreateMap<ProductManufacturer, ProductManufacturerMappingsDto>();
+
+            CreateMap<ProductWarehouseInventory, ProductWarehouseInventoryDto>();
 
             CreateMap<Language, LanguageDto>();
 
