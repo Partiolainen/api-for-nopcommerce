@@ -23,6 +23,7 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 using Nop.Core.Domain.Directory;
+using Nop.Core.Domain.Shipping;
 
 namespace Nop.Plugin.Api.Infrastructure
 {
@@ -75,6 +76,7 @@ namespace Nop.Plugin.Api.Infrastructure
             services.AddScoped<IFactory<Manufacturer>, ManufacturerFactory>();
             services.AddScoped<IFactory<Topic>, TopicFactory>();
             services.AddScoped<IFactory<Currency>, CurrencyFactory>();
+            services.AddScoped<IFactory<Warehouse>, WarehouseFactory>();
 
             services.AddScoped<IJsonPropertyMapper, JsonPropertyMapper>();
 
