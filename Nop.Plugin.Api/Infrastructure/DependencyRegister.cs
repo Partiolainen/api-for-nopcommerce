@@ -51,6 +51,8 @@ namespace Nop.Plugin.Api.Infrastructure
             services.AddScoped<ISpecificationAttributeApiService, SpecificationAttributesApiService>();
             services.AddScoped<INewsLetterSubscriptionApiService, NewsLetterSubscriptionApiService>();
             services.AddScoped<IManufacturerApiService, ManufacturerApiService>();
+            services.AddScoped<IWarehouseApiService, WarehouseApiService>();
+            services.AddScoped<IProductWarehouseInventoriesApiService, ProductWarehouseInventoriesApiService>();
 
             services.AddScoped<IMappingHelper, MappingHelper>();
             services.AddScoped<ICustomerRolesHelper, CustomerRolesHelper>();
