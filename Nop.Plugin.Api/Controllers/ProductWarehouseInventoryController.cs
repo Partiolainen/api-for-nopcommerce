@@ -139,7 +139,7 @@ namespace Nop.Plugin.Api.Controllers
         }
 
         [HttpPost]
-        [Route("/api/product_category_mappings", Name = "CreateProductWarehouseInventory")]
+        [Route("/api/product_warehouse_inventories", Name = "CreateProductWarehouseInventory")]
         [ProducesResponseType(typeof(ProductWarehouseInventoryRootObject), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(string), (int)HttpStatusCode.Unauthorized)]
         [ProducesResponseType(typeof(ErrorsRootObject), (int)HttpStatusCode.BadRequest)]
@@ -198,7 +198,7 @@ namespace Nop.Plugin.Api.Controllers
         }
 
         [HttpPut]
-        [Route("/api/product_category_mappings/{id}", Name = "UpdateProductWarehouseInventory")]
+        [Route("/api/product_warehouse_inventories/{id}", Name = "UpdateProductWarehouseInventory")]
         [ProducesResponseType(typeof(ProductWarehouseInventoryRootObject), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(string), (int)HttpStatusCode.Unauthorized)]
         [ProducesResponseType(typeof(string), (int)HttpStatusCode.NotFound)]
@@ -260,6 +260,35 @@ namespace Nop.Plugin.Api.Controllers
             var json = JsonFieldsSerializer.Serialize(productWarehouseInventoryRootObject, string.Empty);
 
             return new RawJsonActionResult(json);
+        }
+
+        [HttpDelete]
+        [Route("/api/product_warehouse_inventories/{id}", Name = "DeleteProductWarehouseInventory")]
+        [ProducesResponseType(typeof(void), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(string), (int)HttpStatusCode.Unauthorized)]
+        [ProducesResponseType(typeof(ErrorsRootObject), (int)HttpStatusCode.BadRequest)]
+        [ProducesResponseType(typeof(string), (int)HttpStatusCode.NotFound)]
+        [GetRequestsErrorInterceptorActionFilter]
+        public async Task<IActionResult> DeleteProductWarehouseInventory([FromRoute] int id)
+        {
+            if (id <= 0)
+            {
+                return Error(HttpStatusCode.BadRequest, "id", "invalid id");
+            }
+
+            var productWarehouseInventory = await _productWarehouseInventoriesService.GetByIdAsync(id);
+
+            if (productWarehouseInventory == null)
+            {
+                return Error(HttpStatusCode.NotFound, "product_warehouse_inventory", "not found");
+            }
+
+            await _productService.DeleteProductWarehouseInventoryAsync(productWarehouseInventory);
+
+            //activity log 
+            await CustomerActivityService.InsertActivityAsync("DeleteProductWarehouseInventory", await LocalizationService.GetResourceAsync("ActivityLog.DeleteProductWarehouseInventory"), productWarehouseInventory);
+
+            return new RawJsonActionResult("{}");
         }
     }
 }
