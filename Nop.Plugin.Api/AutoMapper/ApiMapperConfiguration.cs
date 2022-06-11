@@ -9,6 +9,7 @@ using Nop.Core.Domain.Directory;
 using Nop.Core.Domain.Localization;
 using Nop.Core.Domain.Messages;
 using Nop.Core.Domain.Orders;
+using Nop.Core.Domain.Shipping;
 using Nop.Core.Domain.Stores;
 using Nop.Core.Domain.Topics;
 using Nop.Core.Infrastructure.Mapper;
@@ -31,6 +32,7 @@ using Nop.Plugin.Api.DTO.ProductWarehouseIventories;
 using Nop.Plugin.Api.DTO.ShoppingCarts;
 using Nop.Plugin.Api.DTO.SpecificationAttributes;
 using Nop.Plugin.Api.DTO.Stores;
+using Nop.Plugin.Api.DTO.Warehouses;
 using Nop.Plugin.Api.DTOs.Topics;
 using Nop.Plugin.Api.MappingExtensions;
 
@@ -53,6 +55,9 @@ namespace Nop.Plugin.Api.AutoMapper
             CreateMap<ProductManufacturer, ProductManufacturerMappingsDto>();
 
             CreateMap<ProductWarehouseInventory, ProductWarehouseInventoryDto>();
+
+            CreateMap<Warehouse, WarehouseDto>();
+            CreateMap<WarehouseDto, Warehouse>();
 
             CreateMap<Language, LanguageDto>();
 
