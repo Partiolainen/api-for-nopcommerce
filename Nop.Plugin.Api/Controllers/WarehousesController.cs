@@ -88,5 +88,46 @@ namespace Nop.Plugin.Api.Controllers
 
             return new RawJsonActionResult(json);
         }
+
+        /// <summary>
+        ///     Retrieve warehouse by specified id
+        /// </summary>
+        /// <param name="id">Id of the warehouse</param>
+        /// <param name="fields">Fields from the warehouse you want your json to contain</param>
+        /// <response code="200">OK</response>
+        /// <response code="404">Not Found</response>
+        /// <response code="401">Unauthorized</response>
+        [HttpGet]
+        [Route("/api/warehouses/{id}", Name = "GetWarehouseById")]
+        [AuthorizePermission("ManageShippingSettings")]
+        [ProducesResponseType(typeof(WarehousesRootObject), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(ErrorsRootObject), (int)HttpStatusCode.BadRequest)]
+        [ProducesResponseType(typeof(ErrorsRootObject), (int)HttpStatusCode.NotFound)]
+        [ProducesResponseType(typeof(string), (int)HttpStatusCode.Unauthorized)]
+        [GetRequestsErrorInterceptorActionFilter]
+        public async Task<IActionResult> GetWarehouseById([FromRoute] int id, [FromQuery] string fields = "")
+        {
+            if (id <= 0)
+            {
+                return Error(HttpStatusCode.BadRequest, "id", "invalid id");
+            }
+
+            var warehouse = _warehouseApiService.GetWarehouseById(id);
+
+            if (warehouse == null)
+            {
+                return Error(HttpStatusCode.NotFound, "warehouse", "warehouse not found");
+            }
+
+            var warehouseDto = await _dtoHelper.PrepareWarehouseDtoAsync(warehouse);
+
+            var warehousesRootObject = new WarehousesRootObject();
+
+            warehousesRootObject.Warehouses.Add(warehouseDto);
+
+            var json = JsonFieldsSerializer.Serialize(warehousesRootObject, fields);
+
+            return new RawJsonActionResult(json);
+        }
     }
 }
