@@ -1,12 +1,16 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Nop.Core.Domain.Common;
+using Nop.Core.Domain.Customers;
 using Nop.Core.Domain.Shipping;
 using Nop.Plugin.Api.Attributes;
 using Nop.Plugin.Api.Authorization.Attributes;
 using Nop.Plugin.Api.Delta;
+using Nop.Plugin.Api.DTO;
 using Nop.Plugin.Api.DTO.Errors;
 using Nop.Plugin.Api.DTO.Warehouses;
 using Nop.Plugin.Api.Factories;
@@ -14,6 +18,7 @@ using Nop.Plugin.Api.Helpers;
 using Nop.Plugin.Api.Infrastructure;
 using Nop.Plugin.Api.JSON.ActionResults;
 using Nop.Plugin.Api.JSON.Serializers;
+using Nop.Plugin.Api.MappingExtensions;
 using Nop.Plugin.Api.ModelBinders;
 using Nop.Plugin.Api.Models.WarehousesParameters;
 using Nop.Plugin.Api.Services;
@@ -163,6 +168,18 @@ namespace Nop.Plugin.Api.Controllers
 
             // Inserting the new warehouse
             var warehouse = await _factory.InitializeAsync();
+
+            var address = warehouseDelta.Dto.Address.ToEntity();
+            if (address.Id == 0)
+            {
+                await _addressService.InsertAddressAsync(address);
+            }
+            else
+            {
+                await _addressService.UpdateAddressAsync(address);
+            }
+            warehouse.AddressId = address.Id;
+
             warehouseDelta.Merge(warehouse);
 
             await _shippingService.InsertWarehouseAsync(warehouse);
@@ -207,6 +224,17 @@ namespace Nop.Plugin.Api.Controllers
             {
                 return Error(HttpStatusCode.NotFound, "warehouse", "warehouse not found");
             }
+
+            var address = warehouseDelta.Dto.Address.ToEntity();
+            if (address.Id == 0)
+            {
+                await _addressService.InsertAddressAsync(address);
+            }
+            else
+            {
+                await _addressService.UpdateAddressAsync(address);
+            }
+            warehouse.AddressId = address.Id;
 
             warehouseDelta.Merge(warehouse);
 
