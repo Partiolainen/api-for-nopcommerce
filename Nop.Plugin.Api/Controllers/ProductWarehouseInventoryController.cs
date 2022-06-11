@@ -71,7 +71,7 @@ namespace Nop.Plugin.Api.Controllers
         [ProducesResponseType(typeof(string), (int)HttpStatusCode.Unauthorized)]
         [ProducesResponseType(typeof(ErrorsRootObject), (int)HttpStatusCode.BadRequest)]
         [GetRequestsErrorInterceptorActionFilter]
-        public async Task<IActionResult> GetInventories([FromQuery] ProductWarehouseInventoryParametersModel parameters)
+        public IActionResult GetInventories([FromQuery] ProductWarehouseInventoryParametersModel parameters)
         {
             if (parameters.Limit < Constants.Configurations.MinLimit || parameters.Limit > Constants.Configurations.MaxLimit)
             {
