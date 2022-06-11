@@ -21,12 +21,16 @@ namespace Nop.Plugin.Api.Services
             int? categoryId = null, int limit = Constants.Configurations.DefaultLimit,
             int page = Constants.Configurations.DefaultPageValue, int sinceId = Constants.Configurations.DefaultSinceId)
         {
-            var query = GetMappingsQuery(productId, categoryId, sinceId);
+            var query = GetInventoriesQuery(productId, categoryId, sinceId);
 
             return new ApiList<ProductWarehouseInventory>(query, page - 1, limit);
         }
 
-
+        public int GetIvnentoriesCount(int? productId = null, int? warehouseId = null)
+        {
+            return GetInventoriesQuery(productId, warehouseId).Count();
+        }
+        
         public Task<ProductWarehouseInventory> GetByIdAsync(int id)
         {
             if (id <= 0)
@@ -37,7 +41,7 @@ namespace Nop.Plugin.Api.Services
             return _productWarehouseRepository.GetByIdAsync(id);
         }
 
-        private IQueryable<ProductWarehouseInventory> GetMappingsQuery(
+        private IQueryable<ProductWarehouseInventory> GetInventoriesQuery(
             int? productId = null,
             int? warehouseId = null, int sinceId = Constants.Configurations.DefaultSinceId)
         {

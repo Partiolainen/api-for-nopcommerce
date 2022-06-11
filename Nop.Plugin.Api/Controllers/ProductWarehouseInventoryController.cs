@@ -3,14 +3,17 @@ using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Nop.Core.Domain.Catalog;
 using Nop.Plugin.Api.Attributes;
 using Nop.Plugin.Api.Authorization.Attributes;
+using Nop.Plugin.Api.Delta;
 using Nop.Plugin.Api.DTO.Errors;
 using Nop.Plugin.Api.DTO.ProductWarehouseIventories;
 using Nop.Plugin.Api.Infrastructure;
 using Nop.Plugin.Api.JSON.ActionResults;
 using Nop.Plugin.Api.JSON.Serializers;
 using Nop.Plugin.Api.MappingExtensions;
+using Nop.Plugin.Api.ModelBinders;
 using Nop.Plugin.Api.Models.ProductWarehouseInventoryParameters;
 using Nop.Plugin.Api.Services;
 using Nop.Services.Catalog;
@@ -27,11 +30,15 @@ namespace Nop.Plugin.Api.Controllers
     [AuthorizePermission("ManageProducts")]
     public class ProductWarehouseInventoryController : BaseApiController
     {
+        private readonly IProductApiService _productApiService;
         private readonly IProductService _productService;
+        private readonly IWarehouseApiService _warehouseApiService;
         private readonly IProductWarehouseInventoriesApiService _productWarehouseInventoriesService;
 
         public ProductWarehouseInventoryController(
+            IProductApiService productApiService,
             IProductService productService,
+            IWarehouseApiService warehouseApiService,
             IProductWarehouseInventoriesApiService productWarehouseInventoriesService,
             IJsonFieldsSerializer jsonFieldsSerializer,
             IAclService aclService,
@@ -45,7 +52,9 @@ namespace Nop.Plugin.Api.Controllers
             : base(jsonFieldsSerializer, aclService, customerService, storeMappingService, storeService,
                 discountService, customerActivityService, localizationService, pictureService)
         {
+            _productApiService = productApiService;
             _productService = productService;
+            _warehouseApiService = warehouseApiService;
             _productWarehouseInventoriesService = productWarehouseInventoriesService;
         }
 
@@ -124,6 +133,65 @@ namespace Nop.Plugin.Api.Controllers
             productWarehouseInventoryRootObject.ProductWarehouseInventoryDtos.Add(mapping.ToDto());
 
             var json = JsonFieldsSerializer.Serialize(productWarehouseInventoryRootObject, fields);
+
+            return new RawJsonActionResult(json);
+        }
+
+        [HttpPost]
+        [Route("/api/product_category_mappings", Name = "CreateProductWarehouseInventory")]
+        [ProducesResponseType(typeof(ProductWarehouseInventoryRootObject), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(string), (int)HttpStatusCode.Unauthorized)]
+        [ProducesResponseType(typeof(ErrorsRootObject), (int)HttpStatusCode.BadRequest)]
+        [ProducesResponseType(typeof(string), (int)HttpStatusCode.NotFound)]
+        [ProducesResponseType(typeof(ErrorsRootObject), 422)]
+        public async Task<IActionResult> CreateProductWarehouseInventory(
+            [FromBody]
+            [ModelBinder(typeof(JsonModelBinder<ProductWarehouseInventoryDto>))]
+            Delta<ProductWarehouseInventoryDto> productWarehouseInventoryDelta)
+        {
+            // Here we display the errors if the validation has failed at some point.
+            if (!ModelState.IsValid)
+            {
+                return Error();
+            }
+
+            var warehouse = _warehouseApiService.GetWarehouseById(productWarehouseInventoryDelta.Dto.WarehouseId.Value);
+            if (warehouse == null)
+            {
+                return Error(HttpStatusCode.NotFound, "warehouse_id", "not found");
+            }
+
+            var product = _productApiService.GetProductById(productWarehouseInventoryDelta.Dto.ProductId.Value);
+            if (product == null)
+            {
+                return Error(HttpStatusCode.NotFound, "product_id", "not found");
+            }
+
+            var ivnentoriesCount = _productWarehouseInventoriesService.GetIvnentoriesCount(product.Id, warehouse.Id);
+
+            if (ivnentoriesCount > 0)
+            {
+                return Error(HttpStatusCode.BadRequest, "product_warehouse_inventories", "already exist");
+            }
+
+            var newProductWarehouseInventory = new ProductWarehouseInventory();
+            productWarehouseInventoryDelta.Merge(newProductWarehouseInventory);
+
+            //inserting new category
+            await _productService.InsertProductWarehouseInventoryAsync(newProductWarehouseInventory);
+
+            // Preparing the result dto of the new product category mapping
+            var newProductWarehouseInventoryDto = newProductWarehouseInventory.ToDto();
+
+            var productWarehouseInventoryRootObject = new ProductWarehouseInventoryRootObject();
+
+            productWarehouseInventoryRootObject.ProductWarehouseInventoryDtos.Add(newProductWarehouseInventoryDto);
+
+            var json = JsonFieldsSerializer.Serialize(productWarehouseInventoryRootObject, string.Empty);
+
+            //activity log 
+            await CustomerActivityService.InsertActivityAsync("AddNewProductWarehouseInventory", await LocalizationService.GetResourceAsync("ActivityLog.AddNewProductWarehouseInventory"),
+                                                   newProductWarehouseInventory);
 
             return new RawJsonActionResult(json);
         }

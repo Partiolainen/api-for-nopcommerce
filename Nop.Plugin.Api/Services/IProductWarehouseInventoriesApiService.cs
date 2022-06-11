@@ -12,5 +12,7 @@ public interface IProductWarehouseInventoriesApiService
         int? categoryId = null, int limit = Constants.Configurations.DefaultLimit,
         int page = Constants.Configurations.DefaultPageValue, int sinceId = Constants.Configurations.DefaultSinceId);
 
+    int GetIvnentoriesCount(int? productId = null, int? warehouseId = null);
+
     Task<ProductWarehouseInventory> GetByIdAsync(int id);
 }
