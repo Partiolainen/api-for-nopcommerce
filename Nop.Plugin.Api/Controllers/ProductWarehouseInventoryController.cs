@@ -8,6 +8,7 @@ using Nop.Plugin.Api.Attributes;
 using Nop.Plugin.Api.Authorization.Attributes;
 using Nop.Plugin.Api.Delta;
 using Nop.Plugin.Api.DTO.Errors;
+using Nop.Plugin.Api.DTO.ProductCategoryMappings;
 using Nop.Plugin.Api.DTO.ProductWarehouseIventories;
 using Nop.Plugin.Api.Infrastructure;
 using Nop.Plugin.Api.JSON.ActionResults;
@@ -192,6 +193,71 @@ namespace Nop.Plugin.Api.Controllers
             //activity log 
             await CustomerActivityService.InsertActivityAsync("AddNewProductWarehouseInventory", await LocalizationService.GetResourceAsync("ActivityLog.AddNewProductWarehouseInventory"),
                                                    newProductWarehouseInventory);
+
+            return new RawJsonActionResult(json);
+        }
+
+        [HttpPut]
+        [Route("/api/product_category_mappings/{id}", Name = "UpdateProductWarehouseInventory")]
+        [ProducesResponseType(typeof(ProductWarehouseInventoryRootObject), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(string), (int)HttpStatusCode.Unauthorized)]
+        [ProducesResponseType(typeof(string), (int)HttpStatusCode.NotFound)]
+        [ProducesResponseType(typeof(ErrorsRootObject), 422)]
+        [ProducesResponseType(typeof(ErrorsRootObject), (int)HttpStatusCode.BadRequest)]
+        public async Task<IActionResult> UpdateProductWarehouseInventory(
+            [FromBody]
+            [ModelBinder(typeof(JsonModelBinder<ProductWarehouseInventoryDto>))]
+            Delta<ProductWarehouseInventoryDto> productWarehouseInventoryDelta)
+        {
+            // Here we display the errors if the validation has failed at some point.
+            if (!ModelState.IsValid)
+            {
+                return Error();
+            }
+
+            if (productWarehouseInventoryDelta.Dto.WarehouseId.HasValue)
+            {
+                var warehouse = _warehouseApiService.GetWarehouseById(productWarehouseInventoryDelta.Dto.WarehouseId.Value);
+                if (warehouse == null)
+                {
+                    return Error(HttpStatusCode.NotFound, "warehouse_id", "not found");
+                }
+            }
+
+            if (productWarehouseInventoryDelta.Dto.ProductId.HasValue)
+            {
+                var product = _productApiService.GetProductById(productWarehouseInventoryDelta.Dto.ProductId.Value);
+                if (product == null)
+                {
+                    return Error(HttpStatusCode.NotFound, "product_id", "not found");
+                }
+            }
+
+            // We do not need to validate the category id, because this will happen in the model binder using the dto validator.
+            var updateProductWarehouseInventoryId = productWarehouseInventoryDelta.Dto.Id;
+
+            var productWarehouseInventoryEntityToUpdate =
+                await _productWarehouseInventoriesService.GetByIdAsync(updateProductWarehouseInventoryId);
+
+            if (productWarehouseInventoryEntityToUpdate == null)
+            {
+                return Error(HttpStatusCode.NotFound, "product_warehouse_inventory", "not found");
+            }
+
+            productWarehouseInventoryDelta.Merge(productWarehouseInventoryEntityToUpdate);
+
+            await _productService.UpdateProductWarehouseInventoryAsync(productWarehouseInventoryEntityToUpdate);
+
+            //activity log
+            await CustomerActivityService.InsertActivityAsync("UpdateProductWarehouseInventory", await LocalizationService.GetResourceAsync("ActivityLog.UpdateProductWarehouseInventory"), productWarehouseInventoryEntityToUpdate);
+
+            var updateProductWarehouseInventoryDto = productWarehouseInventoryEntityToUpdate.ToDto();
+
+            var productWarehouseInventoryRootObject = new ProductWarehouseInventoryRootObject();
+
+            productWarehouseInventoryRootObject.ProductWarehouseInventoryDtos.Add(updateProductWarehouseInventoryDto);
+
+            var json = JsonFieldsSerializer.Serialize(productWarehouseInventoryRootObject, string.Empty);
 
             return new RawJsonActionResult(json);
         }
