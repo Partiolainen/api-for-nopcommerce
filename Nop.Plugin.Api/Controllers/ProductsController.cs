@@ -379,6 +379,18 @@ namespace Nop.Plugin.Api.Controllers
 
 		private async Task UpdateProductPicturesAsync(Product entityToUpdate, List<ImageMappingDto> setPictures)
         {
+            async Task CreatePicture(ImageMappingDto imageDto)
+            {
+                // add new product picture
+                var newPicture = await PictureService.InsertPictureAsync(imageDto.Binary, imageDto.MimeType, string.Empty);
+                await _productService.InsertProductPictureAsync(new ProductPicture
+                {
+                    PictureId = newPicture.Id,
+                    ProductId = entityToUpdate.Id,
+                    DisplayOrder = imageDto.Position
+                });
+            }
+
             // If no pictures are specified means we don't have to update anything
             if (setPictures == null)
             {
@@ -404,22 +416,19 @@ namespace Nop.Plugin.Api.Controllers
                 {
                     // update existing product picture
                     var productPictureToUpdate = productPictures.FirstOrDefault(x => x.Id == imageDto.Id);
-                    if (productPictureToUpdate != null && imageDto.Position > 0)
+                    if (productPictureToUpdate != null)
                     {
                         productPictureToUpdate.DisplayOrder = imageDto.Position;
                         await _productService.UpdateProductPictureAsync(productPictureToUpdate);
                     }
+                    else
+                    {
+                        await CreatePicture(imageDto);
+                    }
                 }
                 else
                 {
-                    // add new product picture
-                    var newPicture = await PictureService.InsertPictureAsync(imageDto.Binary, imageDto.MimeType, string.Empty);
-                    await _productService.InsertProductPictureAsync(new ProductPicture
-                    {
-                        PictureId = newPicture.Id,
-                        ProductId = entityToUpdate.Id,
-                        DisplayOrder = imageDto.Position
-                    });
+                    await CreatePicture(imageDto);
                 }
             }
         }
