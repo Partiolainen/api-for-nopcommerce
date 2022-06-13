@@ -51,5 +51,8 @@ namespace Nop.Plugin.Api.Models.ProductsParameters
         /// </summary>
         [JsonProperty("is_download")]
         public bool? IsDownload { get; set; }
+
+        [JsonProperty("sku")]
+        public string Sku { get; set; }
     }
 }

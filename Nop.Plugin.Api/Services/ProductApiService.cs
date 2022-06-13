@@ -35,9 +35,11 @@ namespace Nop.Plugin.Api.Services
             DateTime? createdAtMin = null, DateTime? createdAtMax = null, DateTime? updatedAtMin = null, DateTime? updatedAtMax = null,
             int? limit = null, int? page = null,
             int? sinceId = null,
-            int? categoryId = null, string vendorName = null, bool? publishedStatus = null, IList<string> manufacturerPartNumbers = null, bool? isDownload = null)
+            int? categoryId = null, string vendorName = null, bool? publishedStatus = null, IList<string> manufacturerPartNumbers = null, 
+            bool? isDownload = null, string sku = null)
         {
-            var query = GetProductsQuery(createdAtMin, createdAtMax, updatedAtMin, updatedAtMax, vendorName, publishedStatus, ids, categoryId, manufacturerPartNumbers, isDownload);
+            var query = GetProductsQuery(createdAtMin, createdAtMax, updatedAtMin, updatedAtMax, vendorName, publishedStatus,
+                ids, categoryId, manufacturerPartNumbers, isDownload, sku);
 
             if (sinceId > 0)
             {
@@ -81,7 +83,8 @@ namespace Nop.Plugin.Api.Services
         private IQueryable<Product> GetProductsQuery(
             DateTime? createdAtMin = null, DateTime? createdAtMax = null,
             DateTime? updatedAtMin = null, DateTime? updatedAtMax = null, string vendorName = null,
-            bool? publishedStatus = null, IList<int> ids = null, int? categoryId = null, IList<string> manufacturerPartNumbers = null, bool? isDownload = null)
+            bool? publishedStatus = null, IList<int> ids = null, int? categoryId = null,
+            IList<string> manufacturerPartNumbers = null, bool? isDownload = null, string sku = null)
 
         {
             var query = _productRepository.Table;
@@ -127,6 +130,11 @@ namespace Nop.Plugin.Api.Services
             if (updatedAtMax != null)
             {
                 query = query.Where(p => p.UpdatedOnUtc < updatedAtMax.Value);
+            }
+
+            if (!string.IsNullOrEmpty(sku))
+            {
+                query = query.Where(p => p.Sku == sku);
             }
 
             if (!string.IsNullOrEmpty(vendorName))
