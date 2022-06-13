@@ -33,6 +33,7 @@ using Nop.Plugin.Api.DTO.ShoppingCarts;
 using Nop.Plugin.Api.DTO.SpecificationAttributes;
 using Nop.Plugin.Api.DTO.Stores;
 using Nop.Plugin.Api.DTO.Warehouses;
+using Nop.Plugin.Api.DTOs;
 using Nop.Plugin.Api.DTOs.Topics;
 using Nop.Plugin.Api.MappingExtensions;
 
@@ -95,6 +96,9 @@ namespace Nop.Plugin.Api.AutoMapper
             CreateMap<Country, CountryDto>();
 
             CreateMap<Currency, CurrencyDto>();
+
+            CreateMap<DeliveryDate, DeliveryDateDto>();
+            CreateMap<DeliveryDateDto, DeliveryDate>();
         }
 
         public int Order => 0;

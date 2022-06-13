@@ -5,7 +5,6 @@ using Nop.Core.Domain.Catalog;
 using Nop.Plugin.Api.Attributes;
 using Nop.Plugin.Api.DTO.Base;
 using Nop.Plugin.Api.DTO.Images;
-using Nop.Plugin.Api.DTO.Languages;
 using Nop.Plugin.Api.DTO.SpecificationAttributes;
 
 namespace Nop.Plugin.Api.DTO.Products
@@ -492,6 +491,12 @@ namespace Nop.Plugin.Api.DTO.Products
         /// </summary>
         [JsonProperty("display_order")]
         public int? DisplayOrder { get; set; }
+
+        /// <summary>
+        /// Gets or sets a delivery date identifier
+        /// </summary>
+        [JsonProperty("delivery_date")]
+        public DeliveryDateDto DeliveryDate { get; set; }
 
         /// <summary>
         ///     Gets or sets a value indicating whether the entity is published

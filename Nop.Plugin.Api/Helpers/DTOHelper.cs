@@ -38,6 +38,7 @@ using Nop.Services.Media;
 using Nop.Services.Orders;
 using Nop.Services.Security;
 using Nop.Services.Seo;
+using Nop.Services.Shipping.Date;
 using Nop.Services.Stores;
 using Nop.Services.Topics;
 
@@ -61,7 +62,8 @@ namespace Nop.Plugin.Api.Helpers
 		private readonly IAuthenticationService _authenticationService;
 		private readonly ICustomerApiService _customerApiService;
 		private readonly ICurrencyService _currencyService;
-		private readonly IStoreMappingService _storeMappingService;
+        private readonly IDateRangeService _dateRangeService;
+        private readonly IStoreMappingService _storeMappingService;
 		private readonly IStoreService _storeService;
 		private readonly IUrlRecordService _urlRecordService;
 
@@ -86,7 +88,8 @@ namespace Nop.Plugin.Api.Helpers
 			IAddressService addressService,
 			IAuthenticationService authenticationService,
 			ICustomerApiService customerApiService,
-			ICurrencyService currencyService)
+			ICurrencyService currencyService,
+            IDateRangeService dateRangeService)
 		{
 			_productService = productService;
 			_aclService = aclService;
@@ -107,8 +110,9 @@ namespace Nop.Plugin.Api.Helpers
 			_authenticationService = authenticationService;
 			_customerApiService = customerApiService;
 			_currencyService = currencyService;
+            _dateRangeService = dateRangeService;
 
-			_customerLanguage = new Lazy<Task<Language>>(GetAuthenticatedCustomerLanguage);
+            _customerLanguage = new Lazy<Task<Language>>(GetAuthenticatedCustomerLanguage);
 		}
 
 		public async Task<ProductDto> PrepareProductDTOAsync(Product product)
@@ -131,6 +135,7 @@ namespace Nop.Plugin.Api.Helpers
 			var allLanguages = await _languageService.GetAllLanguagesAsync();
 
 			productDto.RequiredProductIds = _productService.ParseRequiredProductIds(product);
+            productDto.DeliveryDate = (await _dateRangeService.GetDeliveryDateByIdAsync(product.DeliveryDateId)).ToDto();
 
 			await PrepareProductAttributesAsync(productDto);
 

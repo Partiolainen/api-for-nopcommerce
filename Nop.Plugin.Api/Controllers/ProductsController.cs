@@ -238,6 +238,8 @@ namespace Nop.Plugin.Api.Controllers
             var product = await _factory.InitializeAsync();
             productDelta.Merge(product);
 
+            product.DeliveryDateId = productDelta.Dto.DeliveryDate?.Id ?? 0;
+
             await _productService.InsertProductAsync(product);
 
             await UpdateProductPicturesAsync(product, productDelta.Dto.Images);
@@ -304,7 +306,9 @@ namespace Nop.Plugin.Api.Controllers
 
             productDelta.Merge(product);
 
+            product.DeliveryDateId = productDelta.Dto.DeliveryDate?.Id ?? 0;
             product.UpdatedOnUtc = DateTime.UtcNow;
+
             await _productService.UpdateProductAsync(product);
 
             await UpdateProductAttributesAsync(product, productDelta);
