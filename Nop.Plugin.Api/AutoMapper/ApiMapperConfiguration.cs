@@ -1,7 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using AutoMapper;
+﻿using AutoMapper;
 using Nop.Core.Domain.Catalog;
 using Nop.Core.Domain.Common;
 using Nop.Core.Domain.Customers;
@@ -19,6 +16,7 @@ using Nop.Plugin.Api.DTO;
 using Nop.Plugin.Api.DTO.Categories;
 using Nop.Plugin.Api.DTO.CustomerRoles;
 using Nop.Plugin.Api.DTO.Customers;
+using Nop.Plugin.Api.DTO.DeliveryDates;
 using Nop.Plugin.Api.DTO.Languages;
 using Nop.Plugin.Api.DTO.Manufacturers;
 using Nop.Plugin.Api.DTO.NewsLetterSubscriptions;
@@ -33,7 +31,6 @@ using Nop.Plugin.Api.DTO.ShoppingCarts;
 using Nop.Plugin.Api.DTO.SpecificationAttributes;
 using Nop.Plugin.Api.DTO.Stores;
 using Nop.Plugin.Api.DTO.Warehouses;
-using Nop.Plugin.Api.DTOs;
 using Nop.Plugin.Api.DTOs.Topics;
 using Nop.Plugin.Api.MappingExtensions;
 

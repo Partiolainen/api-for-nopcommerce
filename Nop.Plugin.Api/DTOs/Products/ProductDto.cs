@@ -4,6 +4,7 @@ using Newtonsoft.Json;
 using Nop.Core.Domain.Catalog;
 using Nop.Plugin.Api.Attributes;
 using Nop.Plugin.Api.DTO.Base;
+using Nop.Plugin.Api.DTO.DeliveryDates;
 using Nop.Plugin.Api.DTO.Images;
 using Nop.Plugin.Api.DTO.SpecificationAttributes;
 

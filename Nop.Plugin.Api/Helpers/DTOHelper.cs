@@ -13,6 +13,7 @@ using Nop.Core.Domain.Stores;
 using Nop.Core.Domain.Topics;
 using Nop.Plugin.Api.DTO;
 using Nop.Plugin.Api.DTO.Categories;
+using Nop.Plugin.Api.DTO.DeliveryDates;
 using Nop.Plugin.Api.DTO.Images;
 using Nop.Plugin.Api.DTO.Languages;
 using Nop.Plugin.Api.DTO.Manufacturers;
@@ -197,6 +198,12 @@ namespace Nop.Plugin.Api.Helpers
             warehouseDto.Address = (await _addressService.GetAddressByIdAsync(warehouse.AddressId))?.ToDto();
 
             return warehouseDto;
+        }
+
+        public DeliveryDateDto PrepareDeliveryDateDto(DeliveryDate deliveryDate)
+        {
+            var deliveryDateDto = deliveryDate.ToDto();
+            return deliveryDateDto;
         }
 
         public TopicDto PrepareTopicDTO(Topic topic)

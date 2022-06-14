@@ -1,6 +1,6 @@
 ﻿using Nop.Core.Domain.Shipping;
 using Nop.Plugin.Api.AutoMapper;
-using Nop.Plugin.Api.DTO;
+using Nop.Plugin.Api.DTO.DeliveryDates;
 
 namespace Nop.Plugin.Api.MappingExtensions
 {

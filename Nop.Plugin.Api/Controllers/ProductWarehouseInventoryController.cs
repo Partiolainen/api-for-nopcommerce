@@ -8,7 +8,6 @@ using Nop.Plugin.Api.Attributes;
 using Nop.Plugin.Api.Authorization.Attributes;
 using Nop.Plugin.Api.Delta;
 using Nop.Plugin.Api.DTO.Errors;
-using Nop.Plugin.Api.DTO.ProductCategoryMappings;
 using Nop.Plugin.Api.DTO.ProductWarehouseIventories;
 using Nop.Plugin.Api.Infrastructure;
 using Nop.Plugin.Api.JSON.ActionResults;

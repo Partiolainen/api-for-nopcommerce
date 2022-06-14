@@ -8,6 +8,7 @@ using Nop.Core.Domain.Stores;
 using Nop.Core.Domain.Topics;
 using Nop.Plugin.Api.DTO;
 using Nop.Plugin.Api.DTO.Categories;
+using Nop.Plugin.Api.DTO.DeliveryDates;
 using Nop.Plugin.Api.DTO.Languages;
 using Nop.Plugin.Api.DTO.Manufacturers;
 using Nop.Plugin.Api.DTO.OrderItems;
@@ -37,6 +38,7 @@ namespace Nop.Plugin.Api.Helpers
         SpecificationAttributeDto PrepareSpecificationAttributeDto(SpecificationAttribute specificationAttribute);
         Task<ManufacturerDto> PrepareManufacturerDtoAsync(Manufacturer manufacturer);
         Task<WarehouseDto> PrepareWarehouseDtoAsync(Warehouse warehouse);
+        DeliveryDateDto PrepareDeliveryDateDto(DeliveryDate deliveryDate);
         TopicDto PrepareTopicDTO(Topic topic);
     }
 }

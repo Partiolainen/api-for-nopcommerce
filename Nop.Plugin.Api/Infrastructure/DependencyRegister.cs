@@ -54,6 +54,7 @@ namespace Nop.Plugin.Api.Infrastructure
             services.AddScoped<IManufacturerApiService, ManufacturerApiService>();
             services.AddScoped<IWarehouseApiService, WarehouseApiService>();
             services.AddScoped<IProductWarehouseInventoriesApiService, ProductWarehouseInventoriesApiService>();
+            services.AddScoped<IDeliveryDateApiService, DeliveryDateApiService>();
 
             services.AddScoped<IMappingHelper, MappingHelper>();
             services.AddScoped<ICustomerRolesHelper, CustomerRolesHelper>();
@@ -77,6 +78,7 @@ namespace Nop.Plugin.Api.Infrastructure
             services.AddScoped<IFactory<Topic>, TopicFactory>();
             services.AddScoped<IFactory<Currency>, CurrencyFactory>();
             services.AddScoped<IFactory<Warehouse>, WarehouseFactory>();
+            services.AddScoped<IFactory<DeliveryDate>, DeliveryDateFactory>();
 
             services.AddScoped<IJsonPropertyMapper, JsonPropertyMapper>();
 
