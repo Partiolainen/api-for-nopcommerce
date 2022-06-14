@@ -64,7 +64,7 @@ namespace Nop.Plugin.Api.Controllers
         /// <response code="400">Bad Request</response>
         /// <response code="401">Unauthorized</response>
         [HttpGet]
-        [Route("/api/delivery-dates", Name = "GetDeliveryDates")]
+        [Route("/api/delivery_dates", Name = "GetDeliveryDates")]
         [AuthorizePermission("ManageShippingSettings")]
         [ProducesResponseType(typeof(DeliveryDatesRootObject), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(ErrorsRootObject), (int)HttpStatusCode.BadRequest)]
@@ -95,7 +95,7 @@ namespace Nop.Plugin.Api.Controllers
         /// <response code="404">Not Found</response>
         /// <response code="401">Unauthorized</response>
         [HttpGet]
-        [Route("/api/delivery-dates/{id}", Name = "GetDeliveryDatesById")]
+        [Route("/api/delivery_dates/{id}", Name = "GetDeliveryDatesById")]
         [AuthorizePermission("ManageShippingSettings")]
         [ProducesResponseType(typeof(DeliveryDatesRootObject), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(ErrorsRootObject), (int)HttpStatusCode.BadRequest)]
@@ -128,7 +128,7 @@ namespace Nop.Plugin.Api.Controllers
         }
 
         [HttpPost]
-        [Route("/api/delivery-dates", Name = "CreateDeliveryDate")]
+        [Route("/api/delivery_dates", Name = "CreateDeliveryDate")]
         [AuthorizePermission("ManageShippingSettings")]
         [ProducesResponseType(typeof(DeliveryDatesRootObject), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(ErrorsRootObject), 422)]
@@ -168,7 +168,7 @@ namespace Nop.Plugin.Api.Controllers
         }
 
         [HttpPut]
-        [Route("/api/delivery-dates/{id}", Name = "UpdateDeliveryDate")]
+        [Route("/api/delivery_dates/{id}", Name = "UpdateDeliveryDate")]
         [AuthorizePermission("ManageShippingSettings")]
         [ProducesResponseType(typeof(DeliveryDatesRootObject), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(ErrorsRootObject), 422)]
@@ -212,7 +212,7 @@ namespace Nop.Plugin.Api.Controllers
         }
 
         [HttpDelete]
-        [Route("/api/delivery-dates/{id}", Name = "DeleteDeliveryDate")]
+        [Route("/api/delivery_dates/{id}", Name = "DeleteDeliveryDate")]
         [AuthorizePermission("ManageShippingSettings")]
         [ProducesResponseType(typeof(void), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(ErrorsRootObject), (int)HttpStatusCode.BadRequest)]
