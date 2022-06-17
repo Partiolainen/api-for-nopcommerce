@@ -80,7 +80,9 @@ namespace Nop.Plugin.Api.Services
         public IList<SpecificationAttributeOption> GetSpecificationAttributeOptions(int specificationAttributeId)
         {
             var query = _specificationAttributeOptionRepository.Table;
-            query = query.OrderBy(x => x.Name);
+            query = query
+                .Where(x => x.SpecificationAttributeId == specificationAttributeId)
+                .OrderBy(x => x.Name);
             return new ApiList<SpecificationAttributeOption>(query, 0, Constants.Configurations.MaxLimit);
         }
     }

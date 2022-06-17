@@ -31,5 +31,12 @@ namespace Nop.Plugin.Api.MappingExtensions
         {
             return specificationAttributeOption.MapTo<SpecificationAttributeOption, SpecificationAttributeOptionDto>();
         }
+
+        public static SpecificationAttributeOption ToEntity(
+            this SpecificationAttributeOptionDto specificationAttributeOptionDto)
+        {
+            return specificationAttributeOptionDto
+                .MapTo<SpecificationAttributeOptionDto, SpecificationAttributeOption>();
+        }
     }
 }

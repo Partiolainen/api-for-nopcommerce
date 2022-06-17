@@ -84,6 +84,7 @@ namespace Nop.Plugin.Api.AutoMapper
 
             CreateMap<SpecificationAttribute, SpecificationAttributeDto>();
             CreateMap<SpecificationAttributeOption, SpecificationAttributeOptionDto>();
+            CreateMap<SpecificationAttributeOptionDto, SpecificationAttributeOption>();
 
             CreateMap<NewsLetterSubscriptionDto, NewsLetterSubscription>();
             CreateMap<NewsLetterSubscription, NewsLetterSubscriptionDto>();
