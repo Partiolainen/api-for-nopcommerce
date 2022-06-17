@@ -302,10 +302,16 @@ namespace Nop.Plugin.Api.Helpers
 			return productSpecificationAttribute.ToDto();
 		}
 
-		public SpecificationAttributeDto PrepareSpecificationAttributeDto(SpecificationAttribute specificationAttribute)
+		public SpecificationAttributeDto PrepareSpecificationAttributeDto(SpecificationAttribute specificationAttribute,
+            IList<SpecificationAttributeOption> specificationAttributeOptions)
 		{
-			return specificationAttribute.ToDto();
+			return specificationAttribute.ToDto(specificationAttributeOptions);
 		}
+
+        public SpecificationAttributeOptionDto PrepareSpecificationAttributeOptionDto(SpecificationAttributeOption specificationAttributeOption)
+        {
+            return specificationAttributeOption.ToDto();
+        }
 
 		public async Task<ManufacturerDto> PrepareManufacturerDtoAsync(Manufacturer manufacturer)
 		{

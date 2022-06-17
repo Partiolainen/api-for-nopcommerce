@@ -79,7 +79,12 @@ namespace Nop.Plugin.Api.Controllers
 
             var specificationAttribtues = _specificationAttributeApiService.GetSpecificationAttributes(parameters.Limit, parameters.Page, parameters.SinceId);
 
-            var specificationAttributeDtos = specificationAttribtues.Select(x => _dtoHelper.PrepareSpecificationAttributeDto(x)).ToList();
+            var specificationAttributeDtos = specificationAttribtues
+                .Select(x =>
+                {
+                    var options = _specificationAttributeApiService.GetSpecificationAttributeOptions(x.Id);
+                    return _dtoHelper.PrepareSpecificationAttributeDto(x, options);
+                }).ToList();
 
             var specificationAttributesRootObject = new SpecificationAttributesRootObjectDto
             {
@@ -143,7 +148,8 @@ namespace Nop.Plugin.Api.Controllers
                 return Error(HttpStatusCode.NotFound, "specification attribute", "not found");
             }
 
-            var specificationAttributeDto = _dtoHelper.PrepareSpecificationAttributeDto(specificationAttribute);
+            var options = _specificationAttributeApiService.GetSpecificationAttributeOptions(specificationAttribute.Id);
+            var specificationAttributeDto = _dtoHelper.PrepareSpecificationAttributeDto(specificationAttribute, options);
 
             var specificationAttributesRootObject = new SpecificationAttributesRootObjectDto();
             specificationAttributesRootObject.SpecificationAttributes.Add(specificationAttributeDto);
@@ -179,7 +185,7 @@ namespace Nop.Plugin.Api.Controllers
             await CustomerActivityService.InsertActivityAsync("AddNewSpecAttribute", await LocalizationService.GetResourceAsync("ActivityLog.AddNewSpecAttribute"), specificationAttribute);
 
             // Preparing the result dto of the new product
-            var specificationAttributeDto = _dtoHelper.PrepareSpecificationAttributeDto(specificationAttribute);
+            var specificationAttributeDto = _dtoHelper.PrepareSpecificationAttributeDto(specificationAttribute, null);
 
             var specificationAttributesRootObjectDto = new SpecificationAttributesRootObjectDto();
             specificationAttributesRootObjectDto.SpecificationAttributes.Add(specificationAttributeDto);
@@ -223,7 +229,8 @@ namespace Nop.Plugin.Api.Controllers
             await CustomerActivityService.InsertActivityAsync("EditSpecAttribute", await LocalizationService.GetResourceAsync("ActivityLog.EditSpecAttribute"), specificationAttribute);
 
             // Preparing the result dto of the new product attribute
-            var specificationAttributeDto = _dtoHelper.PrepareSpecificationAttributeDto(specificationAttribute);
+            var options = _specificationAttributeApiService.GetSpecificationAttributeOptions(specificationAttribute.Id);
+            var specificationAttributeDto = _dtoHelper.PrepareSpecificationAttributeDto(specificationAttribute, options);
 
             var specificatoinAttributesRootObjectDto = new SpecificationAttributesRootObjectDto();
             specificatoinAttributesRootObjectDto.SpecificationAttributes.Add(specificationAttributeDto);

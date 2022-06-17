@@ -14,5 +14,7 @@ namespace Nop.Plugin.Api.Services
         IList<SpecificationAttribute> GetSpecificationAttributes(
             int limit = Constants.Configurations.DefaultLimit, int page = Constants.Configurations.DefaultPageValue,
             int sinceId = Constants.Configurations.DefaultSinceId);
+
+        IList<SpecificationAttributeOption> GetSpecificationAttributeOptions(int specificationAttributeId);
     }
 }

@@ -11,17 +11,21 @@ namespace Nop.Plugin.Api.Services
     {
         private readonly IRepository<ProductSpecificationAttribute> _productSpecificationAttributesRepository;
         private readonly IRepository<SpecificationAttribute> _specificationAttributesRepository;
+        private readonly IRepository<SpecificationAttributeOption> _specificationAttributeOptionRepository;
 
         public SpecificationAttributesApiService(
             IRepository<ProductSpecificationAttribute> productSpecificationAttributesRepository,
-            IRepository<SpecificationAttribute> specificationAttributesRepository)
+            IRepository<SpecificationAttribute> specificationAttributesRepository,
+            IRepository<SpecificationAttributeOption> specificationAttributeOptionRepository)
         {
             _productSpecificationAttributesRepository = productSpecificationAttributesRepository;
             _specificationAttributesRepository = specificationAttributesRepository;
+            _specificationAttributeOptionRepository = specificationAttributeOptionRepository;
         }
 
         public IList<ProductSpecificationAttribute> GetProductSpecificationAttributes(
-            int? productId = null, int? specificationAttributeOptionId = null, bool? allowFiltering = null, bool? showOnProductPage = null,
+            int? productId = null, int? specificationAttributeOptionId = null, bool? allowFiltering = null,
+            bool? showOnProductPage = null,
             int limit = Constants.Configurations.DefaultLimit, int page = Constants.Configurations.DefaultPageValue,
             int sinceId = Constants.Configurations.DefaultSinceId)
         {
@@ -71,6 +75,13 @@ namespace Nop.Plugin.Api.Services
             query = query.OrderBy(x => x.Id);
 
             return new ApiList<SpecificationAttribute>(query, page - 1, limit);
+        }
+
+        public IList<SpecificationAttributeOption> GetSpecificationAttributeOptions(int specificationAttributeId)
+        {
+            var query = _specificationAttributeOptionRepository.Table;
+            query = query.OrderBy(x => x.Name);
+            return new ApiList<SpecificationAttributeOption>(query, 0, Constants.Configurations.MaxLimit);
         }
     }
 }

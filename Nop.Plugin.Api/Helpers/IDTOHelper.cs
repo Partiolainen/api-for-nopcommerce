@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using Nop.Core.Domain.Catalog;
 using Nop.Core.Domain.Directory;
 using Nop.Core.Domain.Localization;
@@ -35,10 +36,12 @@ namespace Nop.Plugin.Api.Helpers
         Task<CurrencyDto> PrepareCurrencyDtoAsync(Currency currency);
         ProductAttributeDto PrepareProductAttributeDTO(ProductAttribute productAttribute);
         ProductSpecificationAttributeDto PrepareProductSpecificationAttributeDto(ProductSpecificationAttribute productSpecificationAttribute);
-        SpecificationAttributeDto PrepareSpecificationAttributeDto(SpecificationAttribute specificationAttribute);
+        SpecificationAttributeDto PrepareSpecificationAttributeDto(SpecificationAttribute specificationAttribute,
+            IList<SpecificationAttributeOption> specificationAttributeOptions);
         Task<ManufacturerDto> PrepareManufacturerDtoAsync(Manufacturer manufacturer);
         Task<WarehouseDto> PrepareWarehouseDtoAsync(Warehouse warehouse);
         DeliveryDateDto PrepareDeliveryDateDto(DeliveryDate deliveryDate);
         TopicDto PrepareTopicDTO(Topic topic);
+        SpecificationAttributeOptionDto PrepareSpecificationAttributeOptionDto(SpecificationAttributeOption specificationAttributeOption);
     }
 }
