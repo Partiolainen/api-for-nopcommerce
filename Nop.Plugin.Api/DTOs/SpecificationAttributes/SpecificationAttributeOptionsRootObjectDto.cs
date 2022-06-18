@@ -11,7 +11,7 @@ namespace Nop.Plugin.Api.DTO.SpecificationAttributes
             SpecificationAttributeOptions = new List<SpecificationAttributeOptionDto>();
         }
 
-        [JsonProperty("specification_attributes")]
+        [JsonProperty("specification_attribute_options")]
         public IList<SpecificationAttributeOptionDto> SpecificationAttributeOptions { get; set; }
 
         public string GetPrimaryPropertyName()
