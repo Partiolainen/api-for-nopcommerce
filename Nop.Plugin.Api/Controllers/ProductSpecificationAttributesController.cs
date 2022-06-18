@@ -61,7 +61,7 @@ namespace Nop.Plugin.Api.Controllers
         /// <response code="400">Bad Request</response>
         /// <response code="401">Unauthorized</response>
         [HttpGet]
-        [Route("/api/productspecificationattributes", Name = "GetProductSpecificationAttributes")]
+        [Route("/api/product_specification_attributes", Name = "GetProductSpecificationAttributes")]
         [ProducesResponseType(typeof(ProductSpecificationAttributesRootObjectDto), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(ErrorsRootObject), (int)HttpStatusCode.BadRequest)]
         [ProducesResponseType(typeof(string), (int)HttpStatusCode.Unauthorized)]
@@ -83,7 +83,13 @@ namespace Nop.Plugin.Api.Controllers
                                                                                     parameters.AllowFiltering, parameters.ShowOnProductPage, parameters.Limit,
                                                                                     parameters.Page, parameters.SinceId);
 
-            var productSpecificationAttributeDtos = productSpecificationAttribtues.Select(x => _dtoHelper.PrepareProductSpecificationAttributeDto(x)).ToList();
+            var productSpecificationAttributeDtos = productSpecificationAttribtues
+                .Select( x =>
+                {
+                    var specificationAttributeOption = _specificationAttributeApiService.GetSpecificationAttributeOption(
+                        x.SpecificationAttributeOptionId);
+                    return _dtoHelper.PrepareProductSpecificationAttributeDto(x, specificationAttributeOption);
+                }).ToList();
 
             var productSpecificationAttributesRootObject = new ProductSpecificationAttributesRootObjectDto
             {
@@ -101,7 +107,7 @@ namespace Nop.Plugin.Api.Controllers
         /// <response code="200">OK</response>
         /// <response code="401">Unauthorized</response>
         [HttpGet]
-        [Route("/api/productspecificationattributes/count", Name = "GetProductSpecificationAttributesCount")]
+        [Route("/api/product_specification_attributes/count", Name = "GetProductSpecificationAttributesCount")]
         [ProducesResponseType(typeof(ProductSpecificationAttributesCountRootObject), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(string), (int)HttpStatusCode.Unauthorized)]
         [ProducesResponseType(typeof(ErrorsRootObject), (int)HttpStatusCode.BadRequest)]
@@ -127,7 +133,7 @@ namespace Nop.Plugin.Api.Controllers
         /// <response code="404">Not Found</response>
         /// <response code="401">Unauthorized</response>
         [HttpGet]
-        [Route("/api/productspecificationattributes/{id}", Name = "GetProductSpecificationAttributeById")]
+        [Route("/api/product_specification_attributes/{id}", Name = "GetProductSpecificationAttributeById")]
         [ProducesResponseType(typeof(ProductSpecificationAttributesRootObjectDto), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(string), (int)HttpStatusCode.Unauthorized)]
         [ProducesResponseType(typeof(ErrorsRootObject), (int)HttpStatusCode.BadRequest)]
@@ -147,7 +153,10 @@ namespace Nop.Plugin.Api.Controllers
                 return Error(HttpStatusCode.NotFound, "product specification attribute", "not found");
             }
 
-            var productSpecificationAttributeDto = _dtoHelper.PrepareProductSpecificationAttributeDto(productSpecificationAttribute);
+            var specificationAttributeOption =
+                _specificationAttributeApiService.GetSpecificationAttributeOption(productSpecificationAttribute
+                    .SpecificationAttributeOptionId);
+            var productSpecificationAttributeDto = _dtoHelper.PrepareProductSpecificationAttributeDto(productSpecificationAttribute, specificationAttributeOption);
 
             var productSpecificationAttributesRootObject = new ProductSpecificationAttributesRootObjectDto();
             productSpecificationAttributesRootObject.ProductSpecificationAttributes.Add(productSpecificationAttributeDto);
@@ -158,7 +167,7 @@ namespace Nop.Plugin.Api.Controllers
         }
 
         [HttpPost]
-        [Route("/api/productspecificationattributes", Name = "CreateProductSpecificationAttribute")]
+        [Route("/api/product_specification_attributes", Name = "CreateProductSpecificationAttribute")]
         [ProducesResponseType(typeof(ProductSpecificationAttributesRootObjectDto), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(string), (int)HttpStatusCode.Unauthorized)]
         [ProducesResponseType(typeof(ErrorsRootObject), (int)HttpStatusCode.BadRequest)]
@@ -184,7 +193,10 @@ namespace Nop.Plugin.Api.Controllers
             await CustomerActivityService.InsertActivityAsync("AddNewProductSpecificationAttribute", productSpecificationAttribute.Id.ToString());
 
             // Preparing the result dto of the new product
-            var productSpecificationAttributeDto = _dtoHelper.PrepareProductSpecificationAttributeDto(productSpecificationAttribute);
+            var specificationAttributeOption =
+                _specificationAttributeApiService.GetSpecificationAttributeOption(productSpecificationAttribute
+                    .SpecificationAttributeOptionId);
+            var productSpecificationAttributeDto = _dtoHelper.PrepareProductSpecificationAttributeDto(productSpecificationAttribute, specificationAttributeOption);
 
             var productSpecificationAttributesRootObjectDto = new ProductSpecificationAttributesRootObjectDto();
             productSpecificationAttributesRootObjectDto.ProductSpecificationAttributes.Add(productSpecificationAttributeDto);
@@ -195,7 +207,7 @@ namespace Nop.Plugin.Api.Controllers
         }
 
         [HttpPut]
-        [Route("/api/productspecificationattributes/{id}", Name = "UpdateProductSpecificationAttribute")]
+        [Route("/api/product_specification_attributes/{id}", Name = "UpdateProductSpecificationAttribute")]
         [ProducesResponseType(typeof(ProductSpecificationAttributesRootObjectDto), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(string), (int)HttpStatusCode.Unauthorized)]
         [ProducesResponseType(typeof(ErrorsRootObject), (int)HttpStatusCode.BadRequest)]
@@ -228,7 +240,10 @@ namespace Nop.Plugin.Api.Controllers
             await CustomerActivityService.InsertActivityAsync("EditProductSpecificationAttribute", productSpecificationAttribute.Id.ToString());
 
             // Preparing the result dto of the new product attribute
-            var productSpecificationAttributeDto = _dtoHelper.PrepareProductSpecificationAttributeDto(productSpecificationAttribute);
+            var specificationAttributeOption =
+                _specificationAttributeApiService.GetSpecificationAttributeOption(productSpecificationAttribute
+                    .SpecificationAttributeOptionId);
+            var productSpecificationAttributeDto = _dtoHelper.PrepareProductSpecificationAttributeDto(productSpecificationAttribute, specificationAttributeOption);
 
             var productSpecificatoinAttributesRootObjectDto = new ProductSpecificationAttributesRootObjectDto();
             productSpecificatoinAttributesRootObjectDto.ProductSpecificationAttributes.Add(productSpecificationAttributeDto);
@@ -239,7 +254,7 @@ namespace Nop.Plugin.Api.Controllers
         }
 
         [HttpDelete]
-        [Route("/api/productspecificationattributes/{id}", Name = "DeleteProductSpecificationAttribute")]
+        [Route("/api/product_specification_attributes/{id}", Name = "DeleteProductSpecificationAttribute")]
         [ProducesResponseType(typeof(void), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(string), (int)HttpStatusCode.Unauthorized)]
         [ProducesResponseType(typeof(ErrorsRootObject), (int)HttpStatusCode.BadRequest)]

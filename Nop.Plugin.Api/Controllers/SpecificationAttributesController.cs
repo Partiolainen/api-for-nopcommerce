@@ -62,7 +62,7 @@ namespace Nop.Plugin.Api.Controllers
         /// <response code="400">Bad Request</response>
         /// <response code="401">Unauthorized</response>
         [HttpGet]
-        [Route("/api/specificationattributes", Name = "GetSpecificationAttributes")]
+        [Route("/api/specification_attributes", Name = "GetSpecificationAttributes")]
         [ProducesResponseType(typeof(SpecificationAttributesRootObjectDto), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(ErrorsRootObject), (int)HttpStatusCode.BadRequest)]
         [ProducesResponseType(typeof(string), (int)HttpStatusCode.Unauthorized)]
@@ -107,7 +107,7 @@ namespace Nop.Plugin.Api.Controllers
         /// <response code="200">OK</response>
         /// <response code="401">Unauthorized</response>
         [HttpGet]
-        [Route("/api/specificationattributes/count", Name = "GetSpecificationAttributesCount")]
+        [Route("/api/specification_attributes/count", Name = "GetSpecificationAttributesCount")]
         [ProducesResponseType(typeof(SpecificationAttributesCountRootObject), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(string), (int)HttpStatusCode.Unauthorized)]
         [ProducesResponseType(typeof(ErrorsRootObject), (int)HttpStatusCode.BadRequest)]
@@ -135,7 +135,7 @@ namespace Nop.Plugin.Api.Controllers
         /// <response code="404">Not Found</response>
         /// <response code="401">Unauthorized</response>
         [HttpGet]
-        [Route("/api/specificationattributes/{id}", Name = "GetSpecificationAttributeById")]
+        [Route("/api/specification_attributes/{id}", Name = "GetSpecificationAttributeById")]
         [ProducesResponseType(typeof(SpecificationAttributesRootObjectDto), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(string), (int)HttpStatusCode.Unauthorized)]
         [ProducesResponseType(typeof(ErrorsRootObject), (int)HttpStatusCode.BadRequest)]
@@ -169,7 +169,7 @@ namespace Nop.Plugin.Api.Controllers
         }
 
         [HttpPost]
-        [Route("/api/specificationattributes", Name = "CreateSpecificationAttribute")]
+        [Route("/api/specification_attributes", Name = "CreateSpecificationAttribute")]
         [ProducesResponseType(typeof(SpecificationAttributesRootObjectDto), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(string), (int)HttpStatusCode.Unauthorized)]
         [ProducesResponseType(typeof(ErrorsRootObject), (int)HttpStatusCode.BadRequest)]
@@ -213,7 +213,7 @@ namespace Nop.Plugin.Api.Controllers
         }
 
         [HttpPost]
-        [Route("/api/specificationattributes/options", Name = "CreateSpecificationAttributeOption")]
+        [Route("/api/specification_attributes/options", Name = "CreateSpecificationAttributeOption")]
         [ProducesResponseType(typeof(SpecificationAttributeOptionsRootObjectDto), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(string), (int)HttpStatusCode.Unauthorized)]
         [ProducesResponseType(typeof(ErrorsRootObject), (int)HttpStatusCode.BadRequest)]
@@ -253,7 +253,7 @@ namespace Nop.Plugin.Api.Controllers
         }
 
         [HttpPut]
-        [Route("/api/specificationattributes/{id}", Name = "UpdateSpecificationAttribute")]
+        [Route("/api/specification_attributes/{id}", Name = "UpdateSpecificationAttribute")]
         [ProducesResponseType(typeof(SpecificationAttributesRootObjectDto), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(string), (int)HttpStatusCode.Unauthorized)]
         [ProducesResponseType(typeof(ErrorsRootObject), (int)HttpStatusCode.BadRequest)]
@@ -319,7 +319,7 @@ namespace Nop.Plugin.Api.Controllers
         }
 
         [HttpPut]
-        [Route("/api/specificationattributes/options/{id}", Name = "UpdateSpecificationAttributeOption")]
+        [Route("/api/specification_attributes/options/{id}", Name = "UpdateSpecificationAttributeOption")]
         [ProducesResponseType(typeof(SpecificationAttributeOptionsRootObjectDto), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(string), (int)HttpStatusCode.Unauthorized)]
         [ProducesResponseType(typeof(ErrorsRootObject), (int)HttpStatusCode.BadRequest)]
@@ -368,7 +368,7 @@ namespace Nop.Plugin.Api.Controllers
         }
 
         [HttpDelete]
-        [Route("/api/specificationattributes/{id}", Name = "DeleteSpecificationAttribute")]
+        [Route("/api/specification_attributes/{id}", Name = "DeleteSpecificationAttribute")]
         [ProducesResponseType(typeof(void), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(string), (int)HttpStatusCode.Unauthorized)]
         [ProducesResponseType(typeof(ErrorsRootObject), (int)HttpStatusCode.BadRequest)]
