@@ -16,5 +16,6 @@ namespace Nop.Plugin.Api.Services
             int sinceId = Constants.Configurations.DefaultSinceId);
 
         IList<SpecificationAttributeOption> GetSpecificationAttributeOptions(int specificationAttributeId);
+        SpecificationAttributeOption GetSpecificationAttributeOption(int id);
     }
 }

@@ -64,6 +64,7 @@ namespace Nop.Plugin.Api.Helpers
 		private readonly ICustomerApiService _customerApiService;
 		private readonly ICurrencyService _currencyService;
         private readonly IDateRangeService _dateRangeService;
+        private readonly ISpecificationAttributeApiService _specificationAttributeApiService;
         private readonly IStoreMappingService _storeMappingService;
 		private readonly IStoreService _storeService;
 		private readonly IUrlRecordService _urlRecordService;
@@ -90,7 +91,8 @@ namespace Nop.Plugin.Api.Helpers
 			IAuthenticationService authenticationService,
 			ICustomerApiService customerApiService,
 			ICurrencyService currencyService,
-            IDateRangeService dateRangeService)
+            IDateRangeService dateRangeService,
+            ISpecificationAttributeApiService specificationAttributeApiService)
 		{
 			_productService = productService;
 			_aclService = aclService;
@@ -112,6 +114,7 @@ namespace Nop.Plugin.Api.Helpers
 			_customerApiService = customerApiService;
 			_currencyService = currencyService;
             _dateRangeService = dateRangeService;
+            _specificationAttributeApiService = specificationAttributeApiService;
 
             _customerLanguage = new Lazy<Task<Language>>(GetAuthenticatedCustomerLanguage);
 		}
@@ -297,9 +300,10 @@ namespace Nop.Plugin.Api.Helpers
 			return productAttribute.ToDto();
 		}
 
-		public ProductSpecificationAttributeDto PrepareProductSpecificationAttributeDto(ProductSpecificationAttribute productSpecificationAttribute)
+		public ProductSpecificationAttributeDto PrepareProductSpecificationAttributeDto(ProductSpecificationAttribute productSpecificationAttribute,
+			 SpecificationAttributeOption specificationAttributeOption)
 		{
-			return productSpecificationAttribute.ToDto();
+			return productSpecificationAttribute.ToDto(specificationAttributeOption);
 		}
 
 		public SpecificationAttributeDto PrepareSpecificationAttributeDto(SpecificationAttribute specificationAttribute,
@@ -352,7 +356,10 @@ namespace Nop.Plugin.Api.Helpers
 
 			foreach (var productSpecificationAttribute in productSpecificationAttributes)
 			{
-				var productSpecificationAttributeDto = PrepareProductSpecificationAttributeDto(productSpecificationAttribute);
+                var specificationAttributeOption =
+                    _specificationAttributeApiService.GetSpecificationAttributeOption(productSpecificationAttribute
+                        .SpecificationAttributeOptionId);
+				var productSpecificationAttributeDto = PrepareProductSpecificationAttributeDto(productSpecificationAttribute, specificationAttributeOption);
 
 				if (productSpecificationAttributeDto != null)
 				{

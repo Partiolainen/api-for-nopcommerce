@@ -85,5 +85,13 @@ namespace Nop.Plugin.Api.Services
                 .OrderBy(x => x.Name);
             return new ApiList<SpecificationAttributeOption>(query, 0, Constants.Configurations.MaxLimit);
         }
+
+        public SpecificationAttributeOption GetSpecificationAttributeOption(int id)
+        {
+            var query = _specificationAttributeOptionRepository.Table;
+            query = query
+                .Where(x => x.Id == id);
+            return query.FirstOrDefault();
+        }
     }
 }

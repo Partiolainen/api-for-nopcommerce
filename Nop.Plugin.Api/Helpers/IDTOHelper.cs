@@ -35,7 +35,8 @@ namespace Nop.Plugin.Api.Helpers
         Task<LanguageDto> PrepareLanguageDtoAsync(Language language);
         Task<CurrencyDto> PrepareCurrencyDtoAsync(Currency currency);
         ProductAttributeDto PrepareProductAttributeDTO(ProductAttribute productAttribute);
-        ProductSpecificationAttributeDto PrepareProductSpecificationAttributeDto(ProductSpecificationAttribute productSpecificationAttribute);
+        ProductSpecificationAttributeDto PrepareProductSpecificationAttributeDto(ProductSpecificationAttribute productSpecificationAttribute,
+            SpecificationAttributeOption specificationAttributeOption);
         SpecificationAttributeDto PrepareSpecificationAttributeDto(SpecificationAttribute specificationAttribute,
             IList<SpecificationAttributeOption> specificationAttributeOptions);
         Task<ManufacturerDto> PrepareManufacturerDtoAsync(Manufacturer manufacturer);
