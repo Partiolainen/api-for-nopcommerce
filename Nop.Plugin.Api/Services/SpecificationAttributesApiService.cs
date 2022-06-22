@@ -93,5 +93,10 @@ namespace Nop.Plugin.Api.Services
                 .Where(x => x.Id == id);
             return query.FirstOrDefault();
         }
+
+        public SpecificationAttribute GetSpecificationAttribute(int id)
+        {
+            return _specificationAttributesRepository.Table.FirstOrDefault(x => x.Id == id);
+        }
     }
 }

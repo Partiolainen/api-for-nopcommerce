@@ -17,5 +17,6 @@ namespace Nop.Plugin.Api.Services
 
         IList<SpecificationAttributeOption> GetSpecificationAttributeOptions(int specificationAttributeId);
         SpecificationAttributeOption GetSpecificationAttributeOption(int id);
+        SpecificationAttribute GetSpecificationAttribute(int id);
     }
 }

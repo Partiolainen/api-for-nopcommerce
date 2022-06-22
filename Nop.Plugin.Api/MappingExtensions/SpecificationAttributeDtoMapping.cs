@@ -19,6 +19,12 @@ namespace Nop.Plugin.Api.MappingExtensions
             return productSpecificationAttributeDto;
         }
 
+        public static SpecificationAttributeDto ToDto(this SpecificationAttribute specificationAttribute)
+        {
+            var attributeDto = specificationAttribute.MapTo<SpecificationAttribute, SpecificationAttributeDto>();
+            return attributeDto;
+        }
+
         public static SpecificationAttributeDto ToDto(this SpecificationAttribute specificationAttribute,
             IList<SpecificationAttributeOption> specificationAttributeOptions)
         {

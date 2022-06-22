@@ -12,6 +12,7 @@ using Nop.Plugin.Api.Helpers;
 using Nop.Plugin.Api.Infrastructure;
 using Nop.Plugin.Api.JSON.ActionResults;
 using Nop.Plugin.Api.JSON.Serializers;
+using Nop.Plugin.Api.MappingExtensions;
 using Nop.Plugin.Api.ModelBinders;
 using Nop.Plugin.Api.Models.ProductSpecificationAttributesParameters;
 using Nop.Plugin.Api.Services;
@@ -88,7 +89,10 @@ namespace Nop.Plugin.Api.Controllers
                 {
                     var specificationAttributeOption = _specificationAttributeApiService.GetSpecificationAttributeOption(
                         x.SpecificationAttributeOptionId);
-                    return _dtoHelper.PrepareProductSpecificationAttributeDto(x, specificationAttributeOption);
+                    var specificationAttribute =
+                         _specificationAttributeApiService.GetSpecificationAttribute(specificationAttributeOption
+                            .SpecificationAttributeId);
+                    return _dtoHelper.PrepareProductSpecificationAttributeDto(x, specificationAttributeOption, specificationAttribute);
                 }).ToList();
 
             var productSpecificationAttributesRootObject = new ProductSpecificationAttributesRootObjectDto
@@ -156,7 +160,11 @@ namespace Nop.Plugin.Api.Controllers
             var specificationAttributeOption =
                 _specificationAttributeApiService.GetSpecificationAttributeOption(productSpecificationAttribute
                     .SpecificationAttributeOptionId);
-            var productSpecificationAttributeDto = _dtoHelper.PrepareProductSpecificationAttributeDto(productSpecificationAttribute, specificationAttributeOption);
+            var specificationAttribute =
+                await _specificationAttributeService.GetSpecificationAttributeByIdAsync(specificationAttributeOption
+                    .SpecificationAttributeId);
+            var productSpecificationAttributeDto = _dtoHelper.PrepareProductSpecificationAttributeDto(productSpecificationAttribute,
+                specificationAttributeOption, specificationAttribute);
 
             var productSpecificationAttributesRootObject = new ProductSpecificationAttributesRootObjectDto();
             productSpecificationAttributesRootObject.ProductSpecificationAttributes.Add(productSpecificationAttributeDto);
@@ -196,7 +204,11 @@ namespace Nop.Plugin.Api.Controllers
             var specificationAttributeOption =
                 _specificationAttributeApiService.GetSpecificationAttributeOption(productSpecificationAttribute
                     .SpecificationAttributeOptionId);
-            var productSpecificationAttributeDto = _dtoHelper.PrepareProductSpecificationAttributeDto(productSpecificationAttribute, specificationAttributeOption);
+            var specificationAttribute =
+                await _specificationAttributeService.GetSpecificationAttributeByIdAsync(specificationAttributeOption
+                    .SpecificationAttributeId);
+            var productSpecificationAttributeDto = _dtoHelper.PrepareProductSpecificationAttributeDto(productSpecificationAttribute,
+                specificationAttributeOption, specificationAttribute);
 
             var productSpecificationAttributesRootObjectDto = new ProductSpecificationAttributesRootObjectDto();
             productSpecificationAttributesRootObjectDto.ProductSpecificationAttributes.Add(productSpecificationAttributeDto);
@@ -243,7 +255,11 @@ namespace Nop.Plugin.Api.Controllers
             var specificationAttributeOption =
                 _specificationAttributeApiService.GetSpecificationAttributeOption(productSpecificationAttribute
                     .SpecificationAttributeOptionId);
-            var productSpecificationAttributeDto = _dtoHelper.PrepareProductSpecificationAttributeDto(productSpecificationAttribute, specificationAttributeOption);
+            var specificationAttribute =
+                await _specificationAttributeService.GetSpecificationAttributeByIdAsync(specificationAttributeOption
+                    .SpecificationAttributeId);
+            var productSpecificationAttributeDto = _dtoHelper.PrepareProductSpecificationAttributeDto(productSpecificationAttribute, 
+                specificationAttributeOption, specificationAttribute);
 
             var productSpecificatoinAttributesRootObjectDto = new ProductSpecificationAttributesRootObjectDto();
             productSpecificatoinAttributesRootObjectDto.ProductSpecificationAttributes.Add(productSpecificationAttributeDto);

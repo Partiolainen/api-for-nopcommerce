@@ -13,6 +13,9 @@ namespace Nop.Plugin.Api.DTO.SpecificationAttributes
         [JsonProperty("specification_attribute_id")]
         public int SpecificationAttributeId { get; set; }
 
+        [JsonProperty("specification_attribute")]
+        public SpecificationAttributeDto SpecificationAttribute { get; set; }
+
         /// <summary>
         ///     Gets or sets the name
         /// </summary>

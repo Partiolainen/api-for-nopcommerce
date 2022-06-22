@@ -306,7 +306,16 @@ namespace Nop.Plugin.Api.Helpers
 			return productSpecificationAttribute.ToDto(specificationAttributeOption);
 		}
 
-		public SpecificationAttributeDto PrepareSpecificationAttributeDto(SpecificationAttribute specificationAttribute,
+        public ProductSpecificationAttributeDto PrepareProductSpecificationAttributeDto(
+            ProductSpecificationAttribute productSpecificationAttribute,
+            SpecificationAttributeOption specificationAttributeOption, SpecificationAttribute specificationAttribute)
+        {
+            var productSpecificationAttributeDto = productSpecificationAttribute.ToDto(specificationAttributeOption);
+            productSpecificationAttributeDto.SpecificationAttributeOption.SpecificationAttribute = specificationAttribute.ToDto();
+            return productSpecificationAttributeDto;
+        }
+
+        public SpecificationAttributeDto PrepareSpecificationAttributeDto(SpecificationAttribute specificationAttribute,
             IList<SpecificationAttributeOption> specificationAttributeOptions)
 		{
 			return specificationAttribute.ToDto(specificationAttributeOptions);
