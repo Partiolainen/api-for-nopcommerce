@@ -99,6 +99,38 @@ namespace Nop.Plugin.Api.Controllers
         }
 
         [HttpGet]
+        [Route("/api/currencies/{id}", Name = "GetCurrencyById")]
+        [ProducesResponseType(typeof(CurrenciesRootObject), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(ErrorsRootObject), (int)HttpStatusCode.BadRequest)]
+        [ProducesResponseType(typeof(ErrorsRootObject), (int)HttpStatusCode.NotFound)]
+        [ProducesResponseType(typeof(string), (int)HttpStatusCode.Unauthorized)]
+        [GetRequestsErrorInterceptorActionFilter]
+        public async Task<IActionResult> GetCurrencyById([FromRoute] int id)
+        {
+            if (id <= 0)
+            {
+                return Error(HttpStatusCode.BadRequest, "id", "invalid id");
+            }
+
+            var currency = await _currencyService.GetCurrencyByIdAsync(id);
+
+            if (currency == null)
+            {
+                return Error(HttpStatusCode.NotFound, "currency", "currency not found");
+            }
+
+            var currencyDto = await _dtoHelper.PrepareCurrencyDtoAsync(currency);
+
+            var currenciesRootObject = new CurrenciesRootObject();
+
+            currenciesRootObject.Currencies.Add(currencyDto);
+
+            var json = JsonFieldsSerializer.Serialize(currenciesRootObject, null);
+
+            return new RawJsonActionResult(json);
+        }
+
+        [HttpGet]
         [Route("/api/currencies/primary", Name = "GetPrimaryCurrency")]
         [ProducesResponseType(typeof(CurrencyDto), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(void), (int)HttpStatusCode.NoContent)]
