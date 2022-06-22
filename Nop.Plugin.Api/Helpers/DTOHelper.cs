@@ -10,6 +10,7 @@ using Nop.Core.Domain.Media;
 using Nop.Core.Domain.Orders;
 using Nop.Core.Domain.Shipping;
 using Nop.Core.Domain.Stores;
+using Nop.Core.Domain.Tax;
 using Nop.Core.Domain.Topics;
 using Nop.Plugin.Api.DTO;
 using Nop.Plugin.Api.DTO.Categories;
@@ -25,6 +26,7 @@ using Nop.Plugin.Api.DTO.ShoppingCarts;
 using Nop.Plugin.Api.DTO.SpecificationAttributes;
 using Nop.Plugin.Api.DTO.Stores;
 using Nop.Plugin.Api.DTO.Warehouses;
+using Nop.Plugin.Api.DTOs.Taxes;
 using Nop.Plugin.Api.DTOs.Topics;
 using Nop.Plugin.Api.MappingExtensions;
 using Nop.Plugin.Api.Services;
@@ -381,6 +383,11 @@ namespace Nop.Plugin.Api.Helpers
 		{
 			var addressDto = address.ToDto();
 			return addressDto;
+		}
+		public TaxCategoryDto prepareTaxCategoryDto(TaxCategory taxCategory)
+		{
+			var taxCategoryDto = taxCategory.ToDto();
+			return taxCategoryDto;
 		}
 
 		#region Private methods

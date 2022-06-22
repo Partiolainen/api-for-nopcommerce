@@ -8,6 +8,7 @@ using Nop.Core.Domain.Messages;
 using Nop.Core.Domain.Orders;
 using Nop.Core.Domain.Shipping;
 using Nop.Core.Domain.Stores;
+using Nop.Core.Domain.Tax;
 using Nop.Core.Domain.Topics;
 using Nop.Core.Infrastructure.Mapper;
 using Nop.Plugin.Api.Areas.Admin.Models;
@@ -30,6 +31,8 @@ using Nop.Plugin.Api.DTO.ProductWarehouseIventories;
 using Nop.Plugin.Api.DTO.ShoppingCarts;
 using Nop.Plugin.Api.DTO.SpecificationAttributes;
 using Nop.Plugin.Api.DTO.Stores;
+using Nop.Plugin.Api.DTOs.StateProvinces;
+using Nop.Plugin.Api.DTOs.Taxes;
 using Nop.Plugin.Api.DTO.Warehouses;
 using Nop.Plugin.Api.DTOs.Topics;
 using Nop.Plugin.Api.MappingExtensions;
@@ -91,9 +94,13 @@ namespace Nop.Plugin.Api.AutoMapper
 
             CreateMap<Topic, TopicDto>();
 
+            CreateMap<StateProvince, StateProvinceDto>();
+
             CreateMap<Country, CountryDto>();
 
             CreateMap<Currency, CurrencyDto>();
+
+            CreateMap<TaxCategory, TaxCategoryDto>();
 
             CreateMap<DeliveryDate, DeliveryDateDto>();
             CreateMap<DeliveryDateDto, DeliveryDate>();
