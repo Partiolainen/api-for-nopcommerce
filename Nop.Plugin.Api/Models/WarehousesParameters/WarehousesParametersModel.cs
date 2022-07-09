@@ -10,8 +10,8 @@ namespace Nop.Plugin.Api.Models.WarehousesParameters
         {
             Ids = null;
             ProductId = null;
-            Limit = Constants.Configurations.DefaultLimit;
-            Page = Constants.Configurations.DefaultPageValue;
+            //Limit = Constants.Configurations.DefaultLimit;
+            //Page = Constants.Configurations.DefaultPageValue;
             Fields = string.Empty;
         }
 
@@ -27,17 +27,17 @@ namespace Nop.Plugin.Api.Models.WarehousesParameters
         [JsonProperty("ids")]
         public List<int> Ids { get; set; }
 
-        /// <summary>
-        ///     Amount of results (default: 50) (maximum: 250)
-        /// </summary>
-        [JsonProperty("limit")]
-        public int Limit { get; set; }
+        ///// <summary>
+        /////     Amount of results (default: 50) (maximum: 250)
+        ///// </summary>
+        //[JsonProperty("limit")]
+        //public int Limit { get; set; }
 
-        /// <summary>
-        ///     Page to show (default: 1)
-        /// </summary>
-        [JsonProperty("page")]
-        public int Page { get; set; }
+        ///// <summary>
+        /////     Page to show (default: 1)
+        ///// </summary>
+        //[JsonProperty("page")]
+        //public int Page { get; set; }
         
         /// <summary>
         ///     comma-separated list of fields to include in the response

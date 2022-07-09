@@ -77,18 +77,17 @@ namespace Nop.Plugin.Api.Controllers
         [GetRequestsErrorInterceptorActionFilter]
         public async Task<IActionResult> GetWarehouses([FromQuery] WarehousesParametersModel parameters)
         {
-            if (parameters.Limit < Constants.Configurations.MinLimit || parameters.Limit > Constants.Configurations.MaxLimit)
-            {
-                return Error(HttpStatusCode.BadRequest, "limit", "Invalid limit parameter");
-            }
+            //if (parameters.Limit < Constants.Configurations.MinLimit || parameters.Limit > Constants.Configurations.MaxLimit)
+            //{
+            //    return Error(HttpStatusCode.BadRequest, "limit", "Invalid limit parameter");
+            //}
 
-            if (parameters.Page < Constants.Configurations.DefaultPageValue)
-            {
-                return Error(HttpStatusCode.BadRequest, "page", "Invalid page parameter");
-            }
+            //if (parameters.Page < Constants.Configurations.DefaultPageValue)
+            //{
+            //    return Error(HttpStatusCode.BadRequest, "page", "Invalid page parameter");
+            //}
 
-            var allWarehouses = _warehouseApiService.GetWarehouses(parameters.Ids, 
-                                                                  parameters.Limit, parameters.Page, parameters.ProductId);
+            var allWarehouses = _warehouseApiService.GetWarehouses(parameters.Ids, parameters.ProductId);
 
             IList<WarehouseDto> warehousesAsDtos = await allWarehouses
                 .SelectAwait(async warehouse => await _dtoHelper.PrepareWarehouseDtoAsync(warehouse)).ToListAsync();

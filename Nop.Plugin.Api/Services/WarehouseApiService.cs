@@ -22,12 +22,11 @@ namespace Nop.Plugin.Api.Services
         }
 
         public IList<Warehouse> GetWarehouses(IList<int> ids = null,
-            int limit = Constants.Configurations.DefaultLimit, int page = Constants.Configurations.DefaultPageValue,
             int? productId = null)
         {
             var query = GetWarehousesQuery(productId, ids);
             
-            return new ApiList<Warehouse>(query, page - 1, limit);
+            return new ApiList<Warehouse>(query);
         }
 
         public Warehouse GetWarehouseById(int id)
