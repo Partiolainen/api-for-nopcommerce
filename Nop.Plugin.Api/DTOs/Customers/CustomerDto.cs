@@ -47,6 +47,9 @@ namespace Nop.Plugin.Api.DTO.Customers
             set => _addresses = value;
         }
 
+        [JsonProperty("phone")]
+        public string Phone { get; set; }
+
         #endregion
     }
 }

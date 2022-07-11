@@ -39,6 +39,7 @@ namespace Nop.Plugin.Api.Services
         private static readonly string VAT_NUMBER_STATUS_ID = NopCustomerDefaults.VatNumberStatusIdAttribute.ToLowerInvariant();
         private static readonly string EU_COOKIE_LAW_ACCEPTED = NopCustomerDefaults.EuCookieLawAcceptedAttribute.ToLowerInvariant();
         private static readonly string COMPANY = NopCustomerDefaults.CompanyAttribute.ToLowerInvariant();
+        private static readonly string PHONE = NopCustomerDefaults.PhoneAttribute.ToLowerInvariant();
 
         private readonly IStaticCacheManager _cacheManager;
 		private readonly IAddressApiService _addressApiService;
@@ -259,6 +260,10 @@ namespace Nop.Plugin.Api.Services
                         {
                             customerDto.Company = mapping.Attribute.Value;
                         }
+                        else if (mapping.Attribute.Key.Equals(PHONE, StringComparison.InvariantCultureIgnoreCase))
+                        {
+                            customerDto.Phone = mapping.Attribute.Value;
+                        }
                         else if (mapping.Attribute.Key.Equals(EU_COOKIE_LAW_ACCEPTED, StringComparison.InvariantCultureIgnoreCase))
                         {
                             customerDto.EuCookieLawAccepted = string.IsNullOrWhiteSpace(mapping.Attribute.Value)
@@ -415,6 +420,10 @@ namespace Nop.Plugin.Api.Services
                 {
                     allRecords = GetCustomerAttributesMappingsByKey(allRecords, COMPANY, searchParams[COMPANY]);
                 }
+                if (searchParams.ContainsKey(PHONE))
+                {
+                    allRecords = GetCustomerAttributesMappingsByKey(allRecords, PHONE, searchParams[PHONE]);
+                }
             }
 
             var allRecordsGroupedByCustomerId = allRecords
@@ -521,6 +530,10 @@ namespace Nop.Plugin.Api.Services
                     else if (attribute.Key.Equals(COMPANY, StringComparison.InvariantCultureIgnoreCase))
                     {
                         customerDto.Company = attribute.Value;
+                    }
+                    else if (attribute.Key.Equals(PHONE, StringComparison.InvariantCultureIgnoreCase))
+                    {
+                        customerDto.Phone = attribute.Value;
                     }
                     else if (attribute.Key.Equals(EU_COOKIE_LAW_ACCEPTED, StringComparison.InvariantCultureIgnoreCase))
                     {
