@@ -40,7 +40,8 @@ namespace Nop.Plugin.Api.Controllers
 	public class CustomersController : BaseApiController
 	{
 		private readonly ICountryService _countryService;
-		private readonly ICustomerApiService _customerApiService;
+        private readonly IStateProvinceService _stateProvinceService;
+        private readonly ICustomerApiService _customerApiService;
 		private readonly ICustomerRolesHelper _customerRolesHelper;
 		private readonly IEncryptionService _encryptionService;
 		private readonly IFactory<Customer> _factory;
@@ -72,6 +73,7 @@ namespace Nop.Plugin.Api.Controllers
 			IEncryptionService encryptionService,
 			IFactory<Customer> factory,
 			ICountryService countryService,
+			IStateProvinceService stateProvinceService,
 			IMappingHelper mappingHelper,
 			INewsLetterSubscriptionService newsLetterSubscriptionService,
 			IPictureService pictureService, ILanguageService languageService,
@@ -85,7 +87,8 @@ namespace Nop.Plugin.Api.Controllers
 			_customerApiService = customerApiService;
 			_factory = factory;
 			_countryService = countryService;
-			_mappingHelper = mappingHelper;
+            _stateProvinceService = stateProvinceService;
+            _mappingHelper = mappingHelper;
 			_newsLetterSubscriptionService = newsLetterSubscriptionService;
 			_languageService = languageService;
 			_permissionService = permissionService;
@@ -135,6 +138,11 @@ namespace Nop.Plugin.Api.Controllers
 			}
 
 			var allCustomers = await _customerApiService.GetCustomersDtosAsync(parameters.CreatedAtMin, parameters.CreatedAtMax, parameters.Limit, parameters.Page, parameters.SinceId);
+            
+   //         foreach (var customer in allCustomers)
+   //         {
+			//	await PopulateAddressCountryNamesAsync(customer);
+			//}
 
 			var customersRootObject = new CustomersRootObject
 			{
@@ -214,6 +222,8 @@ namespace Nop.Plugin.Api.Controllers
 			{
 				return Error(HttpStatusCode.NotFound, "customer", "not found");
 			}
+
+            //await PopulateAddressCountryNamesAsync(customer);
 
 			var customersRootObject = new CustomersRootObject();
 			customersRootObject.Customers.Add(customer);
@@ -350,7 +360,7 @@ namespace Nop.Plugin.Api.Controllers
 
 			// This is needed because the entity framework won't populate the navigation properties automatically
 			// and the country will be left null. So we do it by hand here.
-			await PopulateAddressCountryNamesAsync(newCustomerDto);
+			//await PopulateAddressCountryNamesAsync(newCustomerDto);
 
 			// Set the fist and last name separately because they are not part of the customer entity, but are saved in the generic attributes.
 			newCustomerDto.FirstName = customerDelta.Dto.FirstName;
@@ -453,7 +463,7 @@ namespace Nop.Plugin.Api.Controllers
 			// This is needed because the entity framework won't populate the navigation properties automatically
 			// and the country name will be left empty because the mapping depends on the navigation property
 			// so we do it by hand here.
-			await PopulateAddressCountryNamesAsync(updatedCustomer);
+			//await PopulateAddressCountryNamesAsync(updatedCustomer);
 
 			// Set the fist and last name separately because they are not part of the customer entity, but are saved in the generic attributes.
 
@@ -654,32 +664,44 @@ namespace Nop.Plugin.Api.Controllers
 			}
 		}
 
-		private async Task PopulateAddressCountryNamesAsync(CustomerDto newCustomerDto)
-		{
-			foreach (var address in newCustomerDto.Addresses)
-			{
-				await SetCountryNameAsync(address);
-			}
+		//private async Task PopulateAddressCountryNamesAsync(CustomerDto newCustomerDto)
+		//{
+		//	foreach (var address in newCustomerDto.Addresses)
+		//	{
+		//		await SetCountryNameAsync(address);
+  //              await SetProvinceNameAsync(address);
+  //          }
 
-			if (newCustomerDto.BillingAddress != null)
-			{
-				await SetCountryNameAsync(newCustomerDto.BillingAddress);
-			}
+		//	if (newCustomerDto.BillingAddress != null)
+		//	{
+		//		await SetCountryNameAsync(newCustomerDto.BillingAddress);
+  //              await SetProvinceNameAsync(newCustomerDto.BillingAddress);
+  //          }
 
-			if (newCustomerDto.ShippingAddress != null)
-			{
-				await SetCountryNameAsync(newCustomerDto.ShippingAddress);
-			}
-		}
+		//	if (newCustomerDto.ShippingAddress != null)
+		//	{
+		//		await SetCountryNameAsync(newCustomerDto.ShippingAddress);
+		//		await SetProvinceNameAsync(newCustomerDto.ShippingAddress);
+		//	}
+		//}
 
-		private async Task SetCountryNameAsync(AddressDto address)
-		{
-			if (string.IsNullOrEmpty(address.CountryName) && address.CountryId.HasValue)
-			{
-				var country = await _countryService.GetCountryByIdAsync(address.CountryId.Value);
-				address.CountryName = country.Name;
-			}
-		}
+		//private async Task SetCountryNameAsync(AddressDto address)
+		//{
+		//	if (string.IsNullOrEmpty(address.CountryName) && address.CountryId.HasValue)
+		//	{
+		//		var country = await _countryService.GetCountryByIdAsync(address.CountryId.Value);
+		//		address.CountryName = country.Name;
+		//	}
+		//}
+
+  //      private async Task SetProvinceNameAsync(AddressDto address)
+  //      {
+  //          if (string.IsNullOrEmpty(address.StateProvinceName) && address.StateProvinceId.HasValue)
+  //          {
+  //              var province = await _stateProvinceService.GetStateProvinceByIdAsync(address.StateProvinceId.Value);
+  //              address.StateProvinceName = province.Name;
+  //          }
+  //      }
 
 		private async Task AddPasswordAsync(string newPassword, Customer customer)
 		{

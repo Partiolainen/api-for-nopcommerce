@@ -66,6 +66,7 @@ namespace Nop.Plugin.Api.Helpers
 		private readonly ICustomerApiService _customerApiService;
 		private readonly ICurrencyService _currencyService;
         private readonly IDateRangeService _dateRangeService;
+        private readonly IAddressApiService _addressApiService;
         private readonly ISpecificationAttributeApiService _specificationAttributeApiService;
         private readonly IStoreMappingService _storeMappingService;
 		private readonly IStoreService _storeService;
@@ -94,6 +95,7 @@ namespace Nop.Plugin.Api.Helpers
 			ICustomerApiService customerApiService,
 			ICurrencyService currencyService,
             IDateRangeService dateRangeService,
+			IAddressApiService addressApiService,
             ISpecificationAttributeApiService specificationAttributeApiService)
 		{
 			_productService = productService;
@@ -116,6 +118,7 @@ namespace Nop.Plugin.Api.Helpers
 			_customerApiService = customerApiService;
 			_currencyService = currencyService;
             _dateRangeService = dateRangeService;
+            _addressApiService = addressApiService;
             _specificationAttributeApiService = specificationAttributeApiService;
 
             _customerLanguage = new Lazy<Task<Language>>(GetAuthenticatedCustomerLanguage);
@@ -192,6 +195,12 @@ namespace Nop.Plugin.Api.Helpers
 
 			orderDto.BillingAddress = (await _addressService.GetAddressByIdAsync(order.BillingAddressId))?.ToDto();
 			orderDto.ShippingAddress = (await _addressService.GetAddressByIdAsync(order.ShippingAddressId ?? 0))?.ToDto();
+
+            await _addressApiService.SetCountryNameAsync(orderDto.BillingAddress);
+            await _addressApiService.SetProvinceNameAsync(orderDto.BillingAddress);
+
+			await _addressApiService.SetCountryNameAsync(orderDto.ShippingAddress);
+            await _addressApiService.SetProvinceNameAsync(orderDto.ShippingAddress);
 
 			return orderDto;
 		}

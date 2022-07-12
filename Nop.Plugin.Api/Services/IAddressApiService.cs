@@ -19,5 +19,7 @@ namespace Nop.Plugin.Api.Services
 		Task<IList<StateProvinceDto>> GetAllStateProvinceAsync();
 		Task<StateProvinceDto> GetStateProvinceByIdAsync(int id);
 		Task<AddressDto> GetAddressByIdAsync(int addressId);
-	}
+        Task SetCountryNameAsync(AddressDto address);
+        Task SetProvinceNameAsync(AddressDto address);
+    }
 }

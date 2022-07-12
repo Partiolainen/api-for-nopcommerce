@@ -51,6 +51,12 @@ namespace Nop.Plugin.Api.DTO
         public int? StateProvinceId { get; set; }
 
         /// <summary>
+        ///     Gets or sets the state/province
+        /// </summary>
+        [JsonProperty("province")]
+        public string StateProvinceName { get; set; }
+
+        /// <summary>
         ///     Gets or sets the city
         /// </summary>
         [JsonProperty("city")]
@@ -97,11 +103,5 @@ namespace Nop.Plugin.Api.DTO
         /// </summary>
         [JsonProperty("created_on_utc")]
         public DateTime? CreatedOnUtc { get; set; }
-
-        /// <summary>
-        ///     Gets or sets the state/province
-        /// </summary>
-        [JsonProperty("province")]
-        public string StateProvinceName { get; set; }
     }
 }

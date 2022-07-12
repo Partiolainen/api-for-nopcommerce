@@ -118,5 +118,23 @@ namespace Nop.Plugin.Api.Services
             var addressEntity = await query.FirstOrDefaultAsync();
             return addressEntity?.ToDto();
         }
-	}
+        
+        public async Task SetCountryNameAsync(AddressDto address)
+        {
+            if (string.IsNullOrEmpty(address.CountryName) && address.CountryId.HasValue)
+            {
+                var country = await _countryService.GetCountryByIdAsync(address.CountryId.Value);
+                address.CountryName = country.Name;
+            }
+        }
+
+        public async Task SetProvinceNameAsync(AddressDto address)
+        {
+            if (string.IsNullOrEmpty(address.StateProvinceName) && address.StateProvinceId.HasValue)
+            {
+                var province = await _stateProvinceService.GetStateProvinceByIdAsync(address.StateProvinceId.Value);
+                address.StateProvinceName = province.Name;
+            }
+        }
+    }
 }

@@ -22,6 +22,7 @@ using System.Threading.Tasks;
 using Nop.Services.Customers;
 using Nop.Core.Domain.Directory;
 using Nop.Core.Domain.Localization;
+using Nop.Plugin.Api.DTO;
 using Nop.Services.Common;
 using Nop.Services.Directory;
 
@@ -44,7 +45,9 @@ namespace Nop.Plugin.Api.Services
         private readonly IStaticCacheManager _cacheManager;
 		private readonly IAddressApiService _addressApiService;
 		private readonly IGenericAttributeService _genericAttributeService;
-		private readonly ICurrencyService _currencyService;
+        private readonly ICountryService _countryService;
+        private readonly IStateProvinceService _stateProvinceService;
+        private readonly ICurrencyService _currencyService;
 		private readonly IRepository<Customer> _customerRepository;
         private readonly IRepository<GenericAttribute> _genericAttributeRepository;
         private readonly ILanguageService _languageService;
@@ -63,6 +66,8 @@ namespace Nop.Plugin.Api.Services
             IStaticCacheManager staticCacheManager,
             IAddressApiService addressApiService,
             IGenericAttributeService genericAttributeService,
+            ICountryService countryService,
+            IStateProvinceService stateProvinceService,
             ICurrencyService currencyService)
         {
             _customerRepository = customerRepository;
@@ -74,7 +79,9 @@ namespace Nop.Plugin.Api.Services
             _cacheManager = staticCacheManager;
 			_addressApiService = addressApiService;
 			_genericAttributeService = genericAttributeService;
-			_currencyService = currencyService;
+            _countryService = countryService;
+            _stateProvinceService = stateProvinceService;
+            _currencyService = currencyService;
 		}
 
         public async Task<IList<CustomerDto>> GetCustomersDtosAsync(
@@ -664,6 +671,27 @@ namespace Nop.Plugin.Api.Services
             });
         }
 
+        public async Task PopulateAddressCountryNamesAsync(CustomerDto newCustomerDto)
+        {
+            foreach (var address in newCustomerDto.Addresses)
+            {
+                await _addressApiService.SetCountryNameAsync(address);
+                await _addressApiService.SetProvinceNameAsync(address);
+            }
+
+            if (newCustomerDto.BillingAddress != null)
+            {
+                await _addressApiService.SetCountryNameAsync(newCustomerDto.BillingAddress);
+                await _addressApiService.SetProvinceNameAsync(newCustomerDto.BillingAddress);
+            }
+
+            if (newCustomerDto.ShippingAddress != null)
+            {
+                await _addressApiService.SetCountryNameAsync(newCustomerDto.ShippingAddress);
+                await _addressApiService.SetProvinceNameAsync(newCustomerDto.ShippingAddress);
+            }
+        }
+
         private async Task SetCustomerAddressesAsync(Customer customer, CustomerDto customerDto)
         {
             customerDto.Addresses = await _addressApiService.GetAddressesByCustomerIdAsync(customer.Id);
@@ -675,6 +703,8 @@ namespace Nop.Plugin.Api.Services
                 customerDto.ShippingAddress = await _addressApiService.GetCustomerAddressAsync(customer.Id, customer.ShippingAddressId.Value);
             else
                 customerDto.ShippingAddress = null;
+
+            await PopulateAddressCountryNamesAsync(customerDto);
         }
 
 		public async Task<Language> GetCustomerLanguageAsync(Customer customer)
