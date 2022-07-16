@@ -83,7 +83,7 @@ namespace Nop.Plugin.Api.Services
 
 		public async Task<IList<CountryDto>> GetAllCountriesAsync(bool mustAllowBilling = false, bool mustAllowShipping = false)
 		{
-            IEnumerable<Country> countries = await _countryService.GetAllCountriesAsync();
+            IEnumerable<Country> countries = await _countryService.GetAllCountriesAsync(showHidden: true);
             if (mustAllowBilling)
                 countries = countries.Where(c => c.AllowsBilling);
             if (mustAllowShipping)
