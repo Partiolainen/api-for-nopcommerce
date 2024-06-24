@@ -3,6 +3,7 @@ using Nop.Core.Domain.Catalog;
 using Nop.Core.Domain.Directory;
 using Nop.Core.Domain.Localization;
 using Nop.Core.Domain.Orders;
+using Nop.Core.Domain.Shipping;
 using Nop.Core.Domain.Stores;
 using Nop.Core.Domain.Tax;
 using Nop.Core.Domain.Topics;
@@ -17,6 +18,7 @@ using Nop.Plugin.Api.DTO.Products;
 using Nop.Plugin.Api.DTO.ShoppingCarts;
 using Nop.Plugin.Api.DTO.SpecificationAttributes;
 using Nop.Plugin.Api.DTO.Stores;
+using Nop.Plugin.Api.DTO.Warehouses;
 using Nop.Plugin.Api.DTOs.Taxes;
 using Nop.Plugin.Api.DTOs.Topics;
 
@@ -35,7 +37,12 @@ namespace Nop.Plugin.Api.Helpers
         ProductAttributeDto PrepareProductAttributeDTO(ProductAttribute productAttribute);
         ProductSpecificationAttributeDto PrepareProductSpecificationAttributeDto(ProductSpecificationAttribute productSpecificationAttribute);
         SpecificationAttributeDto PrepareSpecificationAttributeDto(SpecificationAttribute specificationAttribute);
+
+        SpecificationAttributeOptionDto PrepareSpecificationAttributeOptionDto(
+            SpecificationAttributeOption specificationAttributeOption);
         Task<ManufacturerDto> PrepareManufacturerDtoAsync(Manufacturer manufacturer);
+
+        Task<WarehouseDto> PrepareWarehouseDtoAsync(Warehouse warehouse);
         TopicDto PrepareTopicDTO(Topic topic);
         TaxCategoryDto prepareTaxCategoryDto(TaxCategory taxCategory);
     }

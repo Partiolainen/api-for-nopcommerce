@@ -8,6 +8,7 @@ using Nop.Core.Domain.Directory;
 using Nop.Core.Domain.Localization;
 using Nop.Core.Domain.Media;
 using Nop.Core.Domain.Orders;
+using Nop.Core.Domain.Shipping;
 using Nop.Core.Domain.Stores;
 using Nop.Core.Domain.Tax;
 using Nop.Core.Domain.Topics;
@@ -23,6 +24,7 @@ using Nop.Plugin.Api.DTO.Products;
 using Nop.Plugin.Api.DTO.ShoppingCarts;
 using Nop.Plugin.Api.DTO.SpecificationAttributes;
 using Nop.Plugin.Api.DTO.Stores;
+using Nop.Plugin.Api.DTO.Warehouses;
 using Nop.Plugin.Api.DTOs.Taxes;
 using Nop.Plugin.Api.DTOs.Topics;
 using Nop.Plugin.Api.MappingExtensions;
@@ -64,6 +66,7 @@ namespace Nop.Plugin.Api.Helpers
 		private readonly IStoreMappingService _storeMappingService;
 		private readonly IStoreService _storeService;
 		private readonly IUrlRecordService _urlRecordService;
+		private readonly ISpecificationAttributeService _specificationAttributeService;
 
 		private readonly Lazy<Task<Language>> _customerLanguage;
 
@@ -86,7 +89,8 @@ namespace Nop.Plugin.Api.Helpers
 			IAddressService addressService,
 			IAuthenticationService authenticationService,
 			ICustomerApiService customerApiService,
-			ICurrencyService currencyService)
+			ICurrencyService currencyService,
+			ISpecificationAttributeService specificationAttributeService)
 		{
 			_productService = productService;
 			_aclService = aclService;
@@ -107,6 +111,7 @@ namespace Nop.Plugin.Api.Helpers
 			_authenticationService = authenticationService;
 			_customerApiService = customerApiService;
 			_currencyService = currencyService;
+			_specificationAttributeService = specificationAttributeService;
 
 			_customerLanguage = new Lazy<Task<Language>>(GetAuthenticatedCustomerLanguage);
 		}
@@ -184,8 +189,16 @@ namespace Nop.Plugin.Api.Helpers
 
 			return orderDto;
 		}
+        public async Task<WarehouseDto> PrepareWarehouseDtoAsync(Warehouse warehouse)
+        {
+            var warehouseDto = warehouse.ToDto();
 
-		public TopicDto PrepareTopicDTO(Topic topic)
+            warehouseDto.Address = (await _addressService.GetAddressByIdAsync(warehouse.AddressId))?.ToDto();
+
+            return warehouseDto;
+        }
+
+        public TopicDto PrepareTopicDTO(Topic topic)
 		{
 			var topicDto = topic.ToDto();
 			return topicDto;
@@ -284,6 +297,12 @@ namespace Nop.Plugin.Api.Helpers
 		public SpecificationAttributeDto PrepareSpecificationAttributeDto(SpecificationAttribute specificationAttribute)
 		{
 			return specificationAttribute.ToDto();
+		}
+
+		public SpecificationAttributeOptionDto PrepareSpecificationAttributeOptionDto(
+			SpecificationAttributeOption specificationAttributeOption)
+		{
+			return specificationAttributeOption.ToDto();
 		}
 
 		public async Task<ManufacturerDto> PrepareManufacturerDtoAsync(Manufacturer manufacturer)
@@ -398,7 +417,10 @@ namespace Nop.Plugin.Api.Helpers
 		private async Task PrepareProductAttributesAsync(ProductDto productDto)
 		{
 			var productAttributeMappings = await _productAttributeService.GetProductAttributeMappingsByProductIdAsync(productDto.Id);
-
+			var productAttributeCombinations = await _productAttributeService.GetAllProductAttributeCombinationsAsync(productDto.Id);
+			var productSpecificationAttributes =
+				await _specificationAttributeService.GetProductSpecificationAttributesAsync(productDto.Id);
+			
 			if (productDto.ProductAttributeMappings == null)
 			{
 				productDto.ProductAttributeMappings = new List<ProductAttributeMappingDto>();
@@ -413,6 +435,21 @@ namespace Nop.Plugin.Api.Helpers
 					productDto.ProductAttributeMappings.Add(productAttributeMappingDto);
 				}
 			}
+
+			PrepareProductAttributeCombinations(productAttributeCombinations, productDto);
+
+			if (productDto.ProductSpecificationAttributes == null)
+			{
+				productDto.ProductSpecificationAttributes = new List<ProductSpecificationAttributeDto>();
+			}
+
+			foreach (var productSpecificationAttribute in productSpecificationAttributes)
+			{
+				var productSpecificationAttributeDto = PrepareProductSpecificationAttributeDto(productSpecificationAttribute);
+				if(productSpecificationAttributeDto!=null)
+					productDto.ProductSpecificationAttributes.Add(productSpecificationAttributeDto);
+			}
+
 		}
 
 		private async Task<ProductAttributeMappingDto> PrepareProductAttributeMappingDtoAsync(
